@@ -66,6 +66,12 @@ section h2 {
     margin-bottom: 8px;
 }
 
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
 .task {
     display: flex;
     justify-content: space-between;
