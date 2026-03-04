@@ -1,69 +1,60 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TaskFlow</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <header>
-    <h1>TaskFlow</h1>
-    <p>Ahora puedes organizar tus tareas</p>
-  </header>
+<header>
+  <h1>TaskFlow</h1>
+  <p>Ahora puedes organizar tus tareas</p>
+</header>
 
-  <main>
-    
-    <aside>
-      <h2>Categorías</h2>
-      <ul>
-        <li>Todas</li>
-        <li>Trabajo</li>
-        <li>Estudios</li>
-        <li>Personal</li>
-      </ul>
-    </aside>
+<main>
+  <aside>
+    <h2>Categorías</h2>
+    <ul id="lista-categorias">
+      <li class="active" data-category="Todas">Todas</li>
+      <li data-category="Trabajo">Trabajo</li>
+      <li data-category="Estudios">Estudios</li>
+      <li data-category="Personal">Personal</li>
+    </ul>
+  </aside>
 
-    <section>
-
-      <div class="task-header">
-    <span>Tareas</span>
-    <span>Prioridad</span>
-      </div>
+  <section>
+    <form id="formulario-tareas">
+      <input type="text" id="input-tarea" placeholder="Nueva tarea..." required>
+      <select id="input-prioridad">
+        <option value="alta">Alta</option>
+        <option value="media" selected>Media</option>
+        <option value="baja">Baja</option>
+      </select>
+      <select id="input-categoria">
+        <option value="Trabajo">Trabajo</option>
+        <option value="Estudios">Estudios</option>
+        <option value="Personal">Personal</option>
+      </select>
       
-      <div class="task">
-        <span>Realizar maquetación HTML y CSS</span>
-        <span class="priority alta">Alta</span>
-      </div>
+      <button type="submit">Añadir</button>
+    </form>
 
-      <div class="task">
-        <span>Preparar validaciones</span>
-        <span class="priority media">Media</span>
-      </div>
+    <input type="text" id="input-busqueda" placeholder="Buscar tareas...">
 
-      <div class="task">
-        <span>Practicar subconsultas en SQL</span>
-        <span class="priority media">Media</span>
-      </div>
+    <div class="task-header">
+      <span>Tareas</span>
+      <span>Prioridad</span>
+      <span>Acciones</span>
+    </div>
 
-       <div class="task">
-        <span>Hacer ejercicios de JavaScript</span>
-        <span class="priority media">Media</span>
-      </div>
+    <ul id="lista-tareas">
+    </ul>
 
-      <div class="task">
-        <span>Hacer deporte</span>
-        <span class="priority baja">Baja</span>
-      </div>
+  </section>
+</main>
 
-      <div class="task">
-        <span>Ordenar el escritorio</span>
-        <span class="priority baja">Baja</span>
-      </div>
-
-    </section>
-
-  </main>
-
+<script src="app.js"></script>
 </body>
 </html>

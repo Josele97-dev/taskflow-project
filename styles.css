@@ -7,6 +7,7 @@
     --color-media: #f59e0b;
     --color-baja: #10b981;
     --color-tarea: #eee;
+    
     --espaciado: 16px;
     --radio: 8px;
 }
@@ -51,8 +52,20 @@ aside h2 {
     margin-bottom: 8px;
 }
 
+aside ul {
+    list-style: none;
+}
+
 aside li {
-    padding: 4px 0;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: var(--radio);
+}
+
+aside li:hover,
+aside li.active {
+    background: var(--color-primario);
+    color: white;
 }
 
 section {
@@ -62,16 +75,50 @@ section {
     border-radius: var(--radio);
 }
 
-section h2 {
-    margin-bottom: 8px;
+form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+form input, form select, form button {
+    padding: 8px;
+    border-radius: var(--radio);
+    border: 1px solid #ccc;
+}
+
+form button {
+    background: var(--color-primario);
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#input-busqueda {
+    margin-bottom: 10px;
+    padding: 8px;
+    width: 100%;
+    border-radius: var(--radio);
+    border: 1px solid #ccc;
 }
 
 .task-header {
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  margin-bottom: 10px;
+    display: flex;
+    font-weight: bold;
+    margin-bottom: 10px;
+    align-items: center;
 }
+
+.task-header span:first-child {
+    flex: 1;
+}
+
+.task-header span:nth-child(2),
+.task-header span:nth-child(3) {
+    flex: 0 0 auto;
+    margin-left: 20px;
+}
+
 .task {
     display: flex;
     justify-content: space-between;
@@ -86,6 +133,29 @@ section h2 {
 .task:hover {
     transform: scale(1.02);
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.task span:first-child {
+    flex: 1;
+    margin-right: 10px;
+    word-break: break-word;
+}
+
+.task span.priority {
+    flex: 0 0 auto;
+    margin-left: 10px;
+}
+
+.task span.category {
+    margin-left: 10px;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.task button {
+    flex: 0 0 auto;
+    margin-left: 10px;
+    cursor: pointer;
 }
 
 .priority {
