@@ -20,11 +20,12 @@ Permite añadir, eliminar, filtrar tareas y guardar los datos localmente
 3. Presionar el boton de añadir para que aparezca en la lista
 4. Usar el botón eliminar para borrar tareas
 5. Filtrar tareas usando el menú de categorías o el buscador de tareas
+6. Usar botón con iconos de sol y luna para alternas modo dark
 
 ## Tecnologías
 
 - HTML
-- CSS
+- TailwindCSS
 - JavaScript
 
 ## Despliegue
