@@ -27,10 +27,29 @@ function crearTareaDOM(tarea) {
     const li = document.createElement('li');
     li.className="flex justify-between items-center bg-gray-200 p-3 rounded-md mt-3 transition-transform text-black transition-shadow duration-200 ease-in-out hover:scale-[1.02] hover:shadow-md"
     li.dataset.category = tarea.categoria;
+
+    const spanTextoYEstado = document.createElement('div');
+    spanTextoYEstado.className = "flex items-center flex-1 mr-2 gap-2";
+    li.appendChild(spanTextoYEstado);
+
     const spanTexto = document.createElement('span');
     spanTexto.textContent = tarea.texto;
-    spanTexto.className = "flex-1 mr-2 break-words";
-    li.appendChild(spanTexto);
+    spanTexto.className = "flex-1 break-words";
+    spanTextoYEstado.appendChild(spanTexto);
+
+    const btnEstado = document.createElement('button');
+    btnEstado.className = `
+        flex-none px-2 py-1 rounded-full text-white text-xs
+        ${tarea.completada ? "bg-green-600" : "bg-gray-500"}
+    `;
+    btnEstado.textContent = tarea.completada ? "Hecha" : "Pendiente";
+    spanTextoYEstado.appendChild(btnEstado);
+
+    btnEstado.addEventListener('click', () => {
+        tarea.completada = !tarea.completada;
+        guardarTareas();
+        mostrarTareas(getCategoriaActiva(), inputBusqueda.value.trim());
+    });
 
     const spanPrioridad = document.createElement('span');
     spanPrioridad.className = `
@@ -78,7 +97,10 @@ function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
 
 function cargarTareas() {
     const tareasGuardadas = JSON.parse(localStorage.getItem('tareas')) || [];
-    tareas = tareasGuardadas;
+    tareas = tareasGuardadas.map(t => ({
+        ...t,
+        completada: typeof t.completada === 'boolean' ? t.completada : false
+    }));
     mostrarTareas();
 }
 
@@ -90,7 +112,7 @@ function agregarTarea(e) {
 
     if (texto === '') return;
 
-    const tarea = { texto, prioridad, categoria };
+    const tarea = { texto, prioridad, categoria, completada: false };
     tareas.push(tarea);
     guardarTareas();
     mostrarTareas(getCategoriaActiva(), inputBusqueda.value.trim());
@@ -99,16 +121,20 @@ function agregarTarea(e) {
 
 formulario.addEventListener('submit', agregarTarea);
 
-categorias.forEach(cat => {
-    cat.addEventListener('click', () => {
-        categorias.forEach(c => {
-            c.classList.remove('bg-indigo-900', 'text-white');
-            c.classList.add('bg-white', 'text-gray-800');
-        });
-        cat.classList.remove('bg-white', 'text-gray-800');
-        cat.classList.add('bg-indigo-900', 'text-white');
-        mostrarTareas(cat.dataset.category, inputBusqueda.value.trim());
+document.getElementById('lista-categorias').addEventListener('click', (e) => {
+    const cat = e.target.closest('li[data-category]');
+    if (!cat) return;
+
+    if (cat.classList.contains('bg-indigo-900')) return;
+
+    categorias.forEach(c => {
+        c.classList.toggle('bg-indigo-900', c === cat);
+        c.classList.toggle('text-white', c === cat);
+        c.classList.toggle('bg-white', c !== cat);
+        c.classList.toggle('text-gray-800', c !== cat);
     });
+
+    mostrarTareas(cat.dataset.category, inputBusqueda.value.trim());
 });
 
 inputBusqueda.addEventListener('input', () => {
