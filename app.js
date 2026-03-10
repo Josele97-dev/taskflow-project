@@ -25,25 +25,39 @@ function guardarTareas() {
 
 function crearTareaDOM(tarea) {
     const li = document.createElement('li');
-    li.className="flex justify-between items-center bg-gray-200 p-3 rounded-md mt-3 transition-transform text-black transition-shadow duration-200 ease-in-out hover:scale-[1.02] hover:shadow-md"
+    li.className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-gray-200 p-3 rounded-md mt-3 transition-transform text-black transition-shadow duration-200 ease-in-out hover:scale-[1.02] hover:shadow-md"
     li.dataset.category = tarea.categoria;
 
-    const spanTextoYEstado = document.createElement('div');
-    spanTextoYEstado.className = "flex items-center flex-1 mr-2 gap-2";
-    li.appendChild(spanTextoYEstado);
+    const contenedorTexto = document.createElement('div');
+    contenedorTexto.className = "flex-1";
+    li.appendChild(contenedorTexto);
 
     const spanTexto = document.createElement('span');
     spanTexto.textContent = tarea.texto;
-    spanTexto.className = "flex-1 break-words";
-    spanTextoYEstado.appendChild(spanTexto);
+    spanTexto.className = "block text-sm md:text-base text-gray-900 break-words break-all";
+    contenedorTexto.appendChild(spanTexto);
+
+    const spanCategoria = document.createElement('span');
+    spanCategoria.textContent = tarea.categoria;
+    spanCategoria.className = "block text-xs text-gray-600 mt-1";
+    contenedorTexto.appendChild(spanCategoria);
+
+    const contenedorMeta = document.createElement('div');
+    contenedorMeta.className = "flex items-center flex-wrap gap-2 md:gap-0 md:justify-end w-full md:w-auto";
+    li.appendChild(contenedorMeta);
+
+    // Columna Estado (solo fija ancho en escritorio)
+    const columnaEstado = document.createElement('div');
+    columnaEstado.className = "flex justify-start md:justify-center md:w-28 mb-1 md:mb-0";
+    contenedorMeta.appendChild(columnaEstado);
 
     const btnEstado = document.createElement('button');
     btnEstado.className = `
-        flex-none px-2 py-1 rounded-full text-white text-xs
+        px-3 py-1 rounded-full text-white text-xs font-semibold
         ${tarea.completada ? "bg-green-600" : "bg-gray-500"}
     `;
     btnEstado.textContent = tarea.completada ? "Hecha" : "Pendiente";
-    spanTextoYEstado.appendChild(btnEstado);
+    columnaEstado.appendChild(btnEstado);
 
     btnEstado.addEventListener('click', () => {
         tarea.completada = !tarea.completada;
@@ -51,25 +65,30 @@ function crearTareaDOM(tarea) {
         mostrarTareas(getCategoriaActiva(), inputBusqueda.value.trim());
     });
 
+    // Columna Prioridad (solo fija ancho en escritorio)
+    const columnaPrioridad = document.createElement('div');
+    columnaPrioridad.className = "flex justify-start md:justify-center md:w-28 mb-1 md:mb-0";
+    contenedorMeta.appendChild(columnaPrioridad);
+
     const spanPrioridad = document.createElement('span');
     spanPrioridad.className = `
-        flex-none ml-2 px-2 py-1 rounded-full text-white text-sm
+        px-3 py-1 rounded-full text-white text-sm
         ${tarea.prioridad === "alta" ? "bg-red-500" :
           tarea.prioridad === "media" ? "bg-yellow-500" :
           "bg-green-500"}
     `;
     spanPrioridad.textContent = tarea.prioridad.charAt(0).toUpperCase() + tarea.prioridad.slice(1);
-    li.appendChild(spanPrioridad);
+    columnaPrioridad.appendChild(spanPrioridad);
 
-    const spanCategoria = document.createElement('span');
-    spanCategoria.textContent = tarea.categoria;
-    spanCategoria.className = "ml-2 text-sm text-gray-600";
-    li.appendChild(spanCategoria);
+    // Columna Acciones (solo fija ancho en escritorio)
+    const columnaAcciones = document.createElement('div');
+    columnaAcciones.className = "flex justify-start md:justify-center md:w-28";
+    contenedorMeta.appendChild(columnaAcciones);
 
     const btnBorrar = document.createElement('button');
     btnBorrar.textContent = 'Eliminar';
-    btnBorrar.className = "flex-none ml-2 cursor-pointer text-red-600 hover:text-red-800 transition-colors";
-    li.appendChild(btnBorrar);
+    btnBorrar.className = "cursor-pointer text-sm text-red-600 hover:text-red-800 transition-colors";
+    columnaAcciones.appendChild(btnBorrar);
 
     btnBorrar.addEventListener('click', () => {
         tareas.splice(tareas.indexOf(tarea), 1);

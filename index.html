@@ -31,7 +31,7 @@
   </button>
 </header>
 
-<main class="flex flex-col md:flex-row gap-4 p-4 transition-colors duration-500">
+<main class="flex flex-col md:flex-row md:items-start gap-4 p-4 transition-colors duration-500">
 
   <aside id="aside" class="w-full md:w-64 bg-white dark:bg-gray-700 p-4 rounded-lg shadow transition-colors duration-500">
     <h2 class="text-lg dark:text-white font-semibold mb-2 transition-colors duration-500">Categorías</h2>
@@ -102,11 +102,17 @@
              hover:border-indigo-500 hover:shadow-md
              focus:outline-none focus:ring-2 focus:ring-indigo-500">
 
-    <div class="flex font-bold mb-2 items-center transition-colors duration-500">
+    <!-- Cabecera móvil: solo una etiqueta general -->
+    <div class="flex font-bold mb-1 items-center transition-colors duration-500 md:hidden">
+      <span class="text-sm text-gray-700 dark:text-gray-200">Lista de tareas</span>
+    </div>
+
+    <!-- Cabecera escritorio: columnas alineadas -->
+    <div class="hidden md:flex font-bold mb-2 items-center transition-colors duration-500">
       <span id="titulo1" class="flex-1">Tareas</span>
-      <span id="titulo-estado" class="ml-5">Estado</span>
-      <span id="titulo2" class="ml-5">Prioridad</span>
-      <span id="titulo3" class="ml-5">Acciones</span>
+      <span id="titulo-estado" class="w-28 text-center">Estado</span>
+      <span id="titulo2" class="w-28 text-center">Prioridad</span>
+      <span id="titulo3" class="w-28 text-center">Acciones</span>
     </div>
 
     <ul id="lista-tareas" class="transition-colors duration-500"></ul>
