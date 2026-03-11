@@ -163,18 +163,25 @@ function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
  * @returns {void}
  */
 function cargarTareas() {
-    let tareasGuardadas = [];
+    const raw = localStorage.getItem('tareas');
+
+    /** @type {any} */
+    let parsed = [];
     try {
-        tareasGuardadas = JSON.parse(localStorage.getItem('tareas')) || [];
+        parsed = raw ? JSON.parse(raw) : [];
     } catch {
-        tareasGuardadas = [];
+        parsed = [];
     }
 
-    if (!Array.isArray(tareasGuardadas)) tareasGuardadas = [];
+    if (!Array.isArray(parsed)) {
+        tareas = [];
+        renderActual();
+        return;
+    }
 
-    tareas = tareasGuardadas.map(t => ({
+    tareas = parsed.map((t) => ({
         ...t,
-        completada: typeof t.completada === 'boolean' ? t.completada : false
+        completada: typeof t?.completada === 'boolean' ? t.completada : false,
     }));
     renderActual();
 }
