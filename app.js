@@ -6,10 +6,13 @@ const selectCategoria = document.getElementById('input-categoria');
 const listaTareas = document.getElementById('lista-tareas');
 const itemsCategorias = document.querySelectorAll('#lista-categorias li');
 const inputBusqueda = document.getElementById('input-busqueda');
+const selectOrden = document.getElementById('input-orden');
 const btnTema = document.getElementById('colorbtn');
 
 // Estado
 let tareas = [];
+/** @type {'creacion' | 'prioridad' | 'texto' | 'estado'} */
+let criterioOrdenActual = 'creacion';
 
 /**
  * Persiste la lista de tareas en localStorage.
@@ -43,6 +46,41 @@ function getTextoBusquedaActual() {
  */
 function renderActual() {
     mostrarTareas(getCategoriaActiva(), getTextoBusquedaActual());
+}
+
+/**
+ * Devuelve una copia ordenada de las tareas según el criterio actual.
+ * @param {Array<{texto:string, prioridad:string, categoria:string, completada:boolean}>} lista
+ * @returns {typeof lista}
+ */
+function ordenarTareas(lista) {
+    if (criterioOrdenActual === 'creacion') {
+        // Mantener el orden tal cual se guardó.
+        return lista;
+    }
+
+    const copia = [...lista];
+
+    if (criterioOrdenActual === 'prioridad') {
+        const pesoPrioridad = { alta: 0, media: 1, baja: 2 };
+        copia.sort((a, b) => {
+            const pa = pesoPrioridad[a.prioridad] ?? 99;
+            const pb = pesoPrioridad[b.prioridad] ?? 99;
+            return pa - pb;
+        });
+    } else if (criterioOrdenActual === 'texto') {
+        copia.sort((a, b) =>
+            normalizarTexto(a.texto).localeCompare(normalizarTexto(b.texto), 'es', { sensitivity: 'base' })
+        );
+    } else if (criterioOrdenActual === 'estado') {
+        // Pendientes primero, luego completadas; dentro de cada grupo, respetar posición original.
+        copia.sort((a, b) => {
+            if (a.completada === b.completada) return 0;
+            return a.completada ? 1 : -1;
+        });
+    }
+
+    return copia;
 }
 
 /**
@@ -147,7 +185,9 @@ function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
     const busqueda = String(textoBusqueda ?? '').toLowerCase();
     const fragment = document.createDocumentFragment();
 
-    for (const tarea of tareas) {
+    const listaOrdenada = ordenarTareas(tareas);
+
+    for (const tarea of listaOrdenada) {
         const coincideCategoria = (filtro === 'Todas' || tarea.categoria === filtro);
         const coincideTexto = String(tarea.texto ?? '').toLowerCase().includes(busqueda);
         if (!coincideCategoria || !coincideTexto) continue;
@@ -215,6 +255,14 @@ function initApp() {
     });
 
     formTareas.addEventListener('submit', agregarTarea);
+
+    selectOrden?.addEventListener('change', () => {
+        const valor = selectOrden.value;
+        if (valor === 'creacion' || valor === 'prioridad' || valor === 'texto' || valor === 'estado') {
+            criterioOrdenActual = valor;
+            renderActual();
+        }
+    });
 
     document.getElementById('lista-categorias').addEventListener('click', (e) => {
         const cat = e.target.closest('li[data-category]');

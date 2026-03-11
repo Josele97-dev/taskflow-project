@@ -96,11 +96,24 @@
       </button>
     </form>
 
-    <input type="text" id="input-busqueda" placeholder="Buscar tareas..."
-      class="mb-4 w-full p-2 border-2 border-gray-400 rounded bg-white text-gray-800
-             transition-colors duration-500
-             hover:border-indigo-500 hover:shadow-md
-             focus:outline-none focus:ring-2 focus:ring-indigo-500">
+    <div class="mb-4 flex flex-wrap gap-2 items-center">
+      <input type="text" id="input-busqueda" placeholder="Buscar tareas..."
+        class="flex-1 min-w-[180px] p-2 border-2 border-gray-400 rounded bg-white text-gray-800
+               transition-colors duration-500
+               hover:border-indigo-500 hover:shadow-md
+               focus:outline-none focus:ring-2 focus:ring-indigo-500">
+
+        <select id="input-orden"
+          class="w-full md:w-64 md:flex-none p-2 border-2 border-gray-400 rounded bg-white text-gray-800
+               transition-colors duration-500
+               hover:border-indigo-500 hover:shadow-md
+               focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <option value="creacion" selected>Orden original (creación)</option>
+        <option value="prioridad">Prioridad (alta → baja)</option>
+        <option value="texto">Texto (A → Z)</option>
+        <option value="estado">Estado (pendientes primero)</option>
+      </select>
+    </div>
 
     <!-- Cabecera móvil: solo una etiqueta general -->
     <div class="flex font-bold mb-1 items-center transition-colors duration-500 md:hidden">
