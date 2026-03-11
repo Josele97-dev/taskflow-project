@@ -106,12 +106,18 @@ function getCategoriaActiva() {
 
 function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
     lista.innerHTML = '';
-    tareas.forEach((tarea) => {
-        if ((filtro === 'Todas' || tarea.categoria === filtro) &&
-            tarea.texto.toLowerCase().includes(textoBusqueda.toLowerCase())) {
-            lista.appendChild(crearTareaDOM(tarea));
-        }
-    });
+    const busqueda = String(textoBusqueda ?? '').toLowerCase();
+    const fragment = document.createDocumentFragment();
+
+    for (const tarea of tareas) {
+        const coincideCategoria = (filtro === 'Todas' || tarea.categoria === filtro);
+        const coincideTexto = String(tarea.texto ?? '').toLowerCase().includes(busqueda);
+        if (!coincideCategoria || !coincideTexto) continue;
+
+        fragment.appendChild(crearTareaDOM(tarea));
+    }
+
+    lista.appendChild(fragment);
 }
 
 function cargarTareas() {
