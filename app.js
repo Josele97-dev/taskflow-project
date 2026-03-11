@@ -100,8 +100,8 @@ function crearTareaDOM(tarea) {
 }
 
 function getCategoriaActiva() { 
-    const activa = document.querySelector('#lista-categorias li.bg-indigo-900');
-    return activa ? activa.dataset.category : 'Todas';
+    const activa = document.querySelector('#lista-categorias li.bg-indigo-900[data-category]');
+    return activa?.dataset?.category ?? 'Todas';
 }
 
 function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
