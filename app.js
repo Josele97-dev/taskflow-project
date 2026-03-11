@@ -11,22 +11,45 @@ const btnTema = document.getElementById('colorbtn');
 // Estado
 let tareas = [];
 
+/**
+ * Persiste la lista de tareas en localStorage.
+ * @param {Array<object>} [nextTareas=tareas] Lista a persistir (por defecto el estado actual).
+ * @returns {void}
+ */
 function guardarTareas(nextTareas = tareas) {
     localStorage.setItem('tareas', JSON.stringify(nextTareas));
 }
 
+/**
+ * Convierte un valor a string y elimina espacios alrededor.
+ * @param {unknown} valor
+ * @returns {string}
+ */
 function normalizarTexto(valor) {
     return String(valor ?? '').trim();
 }
 
+/**
+ * Obtiene el texto de búsqueda actual normalizado.
+ * @returns {string}
+ */
 function getTextoBusquedaActual() {
     return normalizarTexto(inputBusqueda.value).toLowerCase();
 }
 
+/**
+ * Re-renderiza la lista usando categoría activa y búsqueda actual.
+ * @returns {void}
+ */
 function renderActual() {
     mostrarTareas(getCategoriaActiva(), getTextoBusquedaActual());
 }
 
+/**
+ * Crea el elemento `<li>` para una tarea, incluyendo listeners de estado y eliminación.
+ * @param {{texto:string, prioridad:string, categoria:string, completada:boolean}} tarea
+ * @returns {HTMLLIElement}
+ */
 function crearTareaDOM(tarea) {
     const li = document.createElement('li');
     li.className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-gray-200 p-3 rounded-md mt-3 transition-transform text-black transition-shadow duration-200 ease-in-out hover:scale-[1.02] hover:shadow-md"
@@ -104,11 +127,21 @@ function crearTareaDOM(tarea) {
     return li;
 }
 
+/**
+ * Devuelve la categoría seleccionada en el sidebar.
+ * @returns {string} Categoría activa o 'Todas' si no hay selección.
+ */
 function getCategoriaActiva() { 
     const activa = document.querySelector('#lista-categorias li.bg-indigo-900[data-category]');
     return activa?.dataset?.category ?? 'Todas';
 }
 
+/**
+ * Renderiza las tareas filtrando por categoría y texto.
+ * @param {string} [filtro='Todas']
+ * @param {string} [textoBusqueda='']
+ * @returns {void}
+ */
 function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
     listaTareas.innerHTML = '';
     const busqueda = String(textoBusqueda ?? '').toLowerCase();
@@ -125,6 +158,10 @@ function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
     listaTareas.appendChild(fragment);
 }
 
+/**
+ * Carga tareas desde localStorage y actualiza el estado en memoria.
+ * @returns {void}
+ */
 function cargarTareas() {
     let tareasGuardadas = [];
     try {
@@ -142,6 +179,11 @@ function cargarTareas() {
     renderActual();
 }
 
+/**
+ * Handler del submit: crea una tarea a partir del formulario.
+ * @param {SubmitEvent} e
+ * @returns {void}
+ */
 function agregarTarea(e) {
     e.preventDefault();
     const texto = String(inputTarea.value ?? '').trim();
@@ -156,6 +198,10 @@ function agregarTarea(e) {
     formTareas.reset();
 }
 
+/**
+ * Inicializa listeners y carga inicial de tareas.
+ * @returns {void}
+ */
 function initApp() {
     btnTema?.addEventListener('click', () => {
         document.documentElement.classList.toggle('dark');
