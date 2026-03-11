@@ -3,6 +3,7 @@ const formTareas = document.getElementById('formulario-tareas');
 const inputTarea = document.getElementById('input-tarea');
 const selectPrioridad = document.getElementById('input-prioridad');
 const selectCategoria = document.getElementById('input-categoria');
+const inputFecha = document.getElementById('input-fecha');
 const listaTareas = document.getElementById('lista-tareas');
 const itemsCategorias = document.querySelectorAll('#lista-categorias li');
 const inputBusqueda = document.getElementById('input-busqueda');
@@ -85,7 +86,7 @@ function ordenarTareas(lista) {
 
 /**
  * Crea el elemento `<li>` para una tarea, incluyendo listeners de estado y eliminación.
- * @param {{texto:string, prioridad:string, categoria:string, completada:boolean}} tarea
+ * @param {{texto:string, prioridad:string, categoria:string, completada:boolean, fecha?:string|null}} tarea
  * @returns {HTMLLIElement}
  */
 function crearTareaDOM(tarea) {
@@ -106,6 +107,13 @@ function crearTareaDOM(tarea) {
     spanCategoria.textContent = tarea.categoria;
     spanCategoria.className = "block text-xs text-gray-600 mt-1";
     contenedorTexto.appendChild(spanCategoria);
+
+    if (tarea.fecha) {
+        const spanFecha = document.createElement('span');
+        spanFecha.textContent = `Fecha límite: ${tarea.fecha}`;
+        spanFecha.className = "block text-xs text-gray-500 mt-0.5";
+        contenedorTexto.appendChild(spanFecha);
+    }
 
     const contenedorMeta = document.createElement('div');
     contenedorMeta.className = "flex items-center flex-wrap gap-2 md:gap-0 md:justify-end w-full md:w-auto";
@@ -222,6 +230,7 @@ function cargarTareas() {
     tareas = parsed.map((t) => ({
         ...t,
         completada: typeof t?.completada === 'boolean' ? t.completada : false,
+        fecha: t?.fecha || null,
     }));
     renderActual();
 }
@@ -236,10 +245,11 @@ function agregarTarea(e) {
     const texto = String(inputTarea.value ?? '').trim();
     const prioridad = selectPrioridad.value;
     const categoria = selectCategoria.value;
+    const fecha = inputFecha.value || null;
 
     if (texto === '') return;
 
-    tareas.push({ texto, prioridad, categoria, completada: false });
+    tareas.push({ texto, prioridad, categoria, fecha, completada: false });
     guardarTareas();
     renderActual();
     formTareas.reset();
