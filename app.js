@@ -115,7 +115,15 @@ function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
 }
 
 function cargarTareas() {
-    const tareasGuardadas = JSON.parse(localStorage.getItem('tareas')) || [];
+    let tareasGuardadas = [];
+    try {
+        tareasGuardadas = JSON.parse(localStorage.getItem('tareas')) || [];
+    } catch {
+        tareasGuardadas = [];
+    }
+
+    if (!Array.isArray(tareasGuardadas)) tareasGuardadas = [];
+
     tareas = tareasGuardadas.map(t => ({
         ...t,
         completada: typeof t.completada === 'boolean' ? t.completada : false
