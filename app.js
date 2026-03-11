@@ -12,86 +12,48 @@ const btnTema = document.getElementById('colorbtn');
 
 // Estado
 let tareas = [];
-/** @type {'creacion' | 'prioridad' | 'texto' | 'estado'} */
 let criterioOrdenActual = 'creacion';
 
-/**
- * Persiste la lista de tareas en localStorage.
- * @param {Array<object>} [nextTareas=tareas] Lista a persistir (por defecto el estado actual).
- * @returns {void}
- */
+// Persistencia
 function guardarTareas(nextTareas = tareas) {
     localStorage.setItem('tareas', JSON.stringify(nextTareas));
 }
 
-/**
- * Convierte un valor a string y elimina espacios alrededor.
- * @param {unknown} valor
- * @returns {string}
- */
 function normalizarTexto(valor) {
     return String(valor ?? '').trim();
 }
 
-/**
- * Obtiene el texto de búsqueda actual normalizado.
- * @returns {string}
- */
 function getTextoBusquedaActual() {
     return normalizarTexto(inputBusqueda.value).toLowerCase();
 }
 
-/**
- * Re-renderiza la lista usando categoría activa y búsqueda actual.
- * @returns {void}
- */
 function renderActual() {
     mostrarTareas(getCategoriaActiva(), getTextoBusquedaActual());
 }
 
-/**
- * Devuelve una copia ordenada de las tareas según el criterio actual.
- * @param {Array<{texto:string, prioridad:string, categoria:string, completada:boolean}>} lista
- * @returns {typeof lista}
- */
 function ordenarTareas(lista) {
-    if (criterioOrdenActual === 'creacion') {
-        // Mantener el orden tal cual se guardó.
-        return lista;
-    }
+    if (criterioOrdenActual === 'creacion') return lista;
 
     const copia = [...lista];
 
     if (criterioOrdenActual === 'prioridad') {
         const pesoPrioridad = { alta: 0, media: 1, baja: 2 };
-        copia.sort((a, b) => {
-            const pa = pesoPrioridad[a.prioridad] ?? 99;
-            const pb = pesoPrioridad[b.prioridad] ?? 99;
-            return pa - pb;
-        });
+        copia.sort((a, b) => (pesoPrioridad[a.prioridad] ?? 99) - (pesoPrioridad[b.prioridad] ?? 99));
     } else if (criterioOrdenActual === 'texto') {
         copia.sort((a, b) =>
             normalizarTexto(a.texto).localeCompare(normalizarTexto(b.texto), 'es', { sensitivity: 'base' })
         );
     } else if (criterioOrdenActual === 'estado') {
-        // Pendientes primero, luego completadas; dentro de cada grupo, respetar posición original.
-        copia.sort((a, b) => {
-            if (a.completada === b.completada) return 0;
-            return a.completada ? 1 : -1;
-        });
+        copia.sort((a, b) => (a.completada === b.completada ? 0 : a.completada ? 1 : -1));
     }
 
     return copia;
 }
 
-/**
- * Crea el elemento `<li>` para una tarea, incluyendo listeners de estado y eliminación.
- * @param {{texto:string, prioridad:string, categoria:string, completada:boolean, fecha?:string|null}} tarea
- * @returns {HTMLLIElement}
- */
+// Crear DOM de tarea
 function crearTareaDOM(tarea) {
     const li = document.createElement('li');
-    li.className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-gray-200 p-3 rounded-md mt-3 transition-transform text-black transition-shadow duration-200 ease-in-out hover:scale-[1.02] hover:shadow-md"
+    li.className = "flex flex-col md:flex-row md:items-center justify-between gap-3 bg-gray-200 p-3 rounded-md mt-3 transition-transform text-black hover:scale-[1.02] hover:shadow-md";
     li.dataset.category = tarea.categoria;
 
     const contenedorTexto = document.createElement('div');
@@ -115,13 +77,19 @@ function crearTareaDOM(tarea) {
         contenedorTexto.appendChild(spanFecha);
     }
 
+    // 🔧 CONTENEDOR META AJUSTADO (más a la izquierda)
     const contenedorMeta = document.createElement('div');
-    contenedorMeta.className = "flex items-center flex-wrap gap-2 md:gap-0 md:justify-end w-full md:w-auto";
+    contenedorMeta.className = `
+        flex items-center flex-wrap
+        gap-2 md:gap-4
+        md:justify-start
+        w-full md:w-auto
+    `;
     li.appendChild(contenedorMeta);
 
-    // Columna Estado (solo fija ancho en escritorio)
+    // Estado
     const columnaEstado = document.createElement('div');
-    columnaEstado.className = "flex justify-start md:justify-center md:w-28 mb-1 md:mb-0";
+    columnaEstado.className = "flex justify-start md:justify-center md:w-24 mb-1 md:mb-0";
     contenedorMeta.appendChild(columnaEstado);
 
     const btnToggleEstado = document.createElement('button');
@@ -138,9 +106,9 @@ function crearTareaDOM(tarea) {
         renderActual();
     });
 
-    // Columna Prioridad (solo fija ancho en escritorio)
+    // Prioridad
     const columnaPrioridad = document.createElement('div');
-    columnaPrioridad.className = "flex justify-start md:justify-center md:w-28 mb-1 md:mb-0";
+    columnaPrioridad.className = "flex justify-start md:justify-center md:w-24 mb-1 md:mb-0";
     contenedorMeta.appendChild(columnaPrioridad);
 
     const spanPrioridad = document.createElement('span');
@@ -153,9 +121,9 @@ function crearTareaDOM(tarea) {
     spanPrioridad.textContent = tarea.prioridad.charAt(0).toUpperCase() + tarea.prioridad.slice(1);
     columnaPrioridad.appendChild(spanPrioridad);
 
-    // Columna Acciones (solo fija ancho en escritorio)
+    // Acciones
     const columnaAcciones = document.createElement('div');
-    columnaAcciones.className = "flex justify-start md:justify-center md:w-28";
+    columnaAcciones.className = "flex justify-start md:justify-center md:w-24";
     contenedorMeta.appendChild(columnaAcciones);
 
     const btnEliminar = document.createElement('button');
@@ -173,21 +141,11 @@ function crearTareaDOM(tarea) {
     return li;
 }
 
-/**
- * Devuelve la categoría seleccionada en el sidebar.
- * @returns {string} Categoría activa o 'Todas' si no hay selección.
- */
-function getCategoriaActiva() { 
+function getCategoriaActiva() {
     const activa = document.querySelector('#lista-categorias li.bg-indigo-900[data-category]');
     return activa?.dataset?.category ?? 'Todas';
 }
 
-/**
- * Renderiza las tareas filtrando por categoría y texto.
- * @param {string} [filtro='Todas']
- * @param {string} [textoBusqueda='']
- * @returns {void}
- */
 function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
     listaTareas.innerHTML = '';
     const busqueda = String(textoBusqueda ?? '').toLowerCase();
@@ -206,15 +164,10 @@ function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
     listaTareas.appendChild(fragment);
 }
 
-/**
- * Carga tareas desde localStorage y actualiza el estado en memoria.
- * @returns {void}
- */
 function cargarTareas() {
     const raw = localStorage.getItem('tareas');
-
-    /** @type {any} */
     let parsed = [];
+
     try {
         parsed = raw ? JSON.parse(raw) : [];
     } catch {
@@ -232,14 +185,10 @@ function cargarTareas() {
         completada: typeof t?.completada === 'boolean' ? t.completada : false,
         fecha: t?.fecha || null,
     }));
+
     renderActual();
 }
 
-/**
- * Handler del submit: crea una tarea a partir del formulario.
- * @param {SubmitEvent} e
- * @returns {void}
- */
 function agregarTarea(e) {
     e.preventDefault();
     const texto = String(inputTarea.value ?? '').trim();
@@ -255,10 +204,6 @@ function agregarTarea(e) {
     formTareas.reset();
 }
 
-/**
- * Inicializa listeners y carga inicial de tareas.
- * @returns {void}
- */
 function initApp() {
     btnTema?.addEventListener('click', () => {
         document.documentElement.classList.toggle('dark');
@@ -268,7 +213,7 @@ function initApp() {
 
     selectOrden?.addEventListener('change', () => {
         const valor = selectOrden.value;
-        if (valor === 'creacion' || valor === 'prioridad' || valor === 'texto' || valor === 'estado') {
+        if (['creacion', 'prioridad', 'texto', 'estado'].includes(valor)) {
             criterioOrdenActual = valor;
             renderActual();
         }
@@ -280,10 +225,13 @@ function initApp() {
         if (cat.classList.contains('bg-indigo-900')) return;
 
         itemsCategorias.forEach(item => {
-            item.classList.toggle('bg-indigo-900', item === cat);
-            item.classList.toggle('text-white', item === cat);
-            item.classList.toggle('bg-white', item !== cat);
-            item.classList.toggle('text-gray-800', item !== cat);
+            const activo = item === cat;
+            item.classList.toggle('bg-indigo-900', activo);
+            item.classList.toggle('dark:bg-indigo-400', activo);
+            item.classList.toggle('text-white', activo);
+            item.classList.toggle('bg-white', !activo);
+            item.classList.toggle('dark:bg-gray-600', !activo);
+            item.classList.toggle('text-gray-800', !activo);
         });
 
         mostrarTareas(cat.dataset.category, getTextoBusquedaActual());
@@ -292,6 +240,12 @@ function initApp() {
     inputBusqueda.addEventListener('input', () => {
         renderActual();
     });
+
+    const categoriaTodas = document.querySelector('#lista-categorias li[data-category="Todas"]');
+    if (categoriaTodas) {
+        categoriaTodas.classList.add('bg-indigo-900', 'dark:bg-indigo-400', 'text-white');
+        categoriaTodas.classList.remove('bg-white', 'dark:bg-gray-600', 'text-gray-800');
+    }
 
     cargarTareas();
 }
