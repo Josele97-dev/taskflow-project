@@ -139,14 +139,13 @@ function cargarTareas() {
 
 function agregarTarea(e) {
     e.preventDefault();
-    const texto = input.value.trim();
+    const texto = String(input.value ?? '').trim();
     const prioridad = selectPrioridad.value;
     const categoria = selectCategoria.value;
 
     if (texto === '') return;
 
-    const tarea = { texto, prioridad, categoria, completada: false };
-    tareas.push(tarea);
+    tareas.push({ texto, prioridad, categoria, completada: false });
     guardarTareas();
     mostrarTareas(getCategoriaActiva(), inputBusqueda.value.trim());
     formulario.reset();
