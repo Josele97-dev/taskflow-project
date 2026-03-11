@@ -1,23 +1,15 @@
-const formulario = document.getElementById('formulario-tareas');
-const input = document.getElementById('input-tarea');
+// DOM
+const formTareas = document.getElementById('formulario-tareas');
+const inputTarea = document.getElementById('input-tarea');
 const selectPrioridad = document.getElementById('input-prioridad');
 const selectCategoria = document.getElementById('input-categoria');
-const lista = document.getElementById('lista-tareas');
-const categorias = document.querySelectorAll('#lista-categorias li');
+const listaTareas = document.getElementById('lista-tareas');
+const itemsCategorias = document.querySelectorAll('#lista-categorias li');
 const inputBusqueda = document.getElementById('input-busqueda');
+const btnTema = document.getElementById('colorbtn');
 
+// Estado
 let tareas = [];
-
-document.addEventListener("DOMContentLoaded", () => {
-
-    const button=document.getElementById("colorbtn");
-
-    button.addEventListener("click", () => {
-        document.documentElement.classList.toggle("dark");
-        
-    });
-
-});
 
 function guardarTareas(nextTareas = tareas) {
     localStorage.setItem('tareas', JSON.stringify(nextTareas));
@@ -63,15 +55,15 @@ function crearTareaDOM(tarea) {
     columnaEstado.className = "flex justify-start md:justify-center md:w-28 mb-1 md:mb-0";
     contenedorMeta.appendChild(columnaEstado);
 
-    const btnEstado = document.createElement('button');
-    btnEstado.className = `
+    const btnToggleEstado = document.createElement('button');
+    btnToggleEstado.className = `
         px-3 py-1 rounded-full text-white text-xs font-semibold
         ${tarea.completada ? "bg-green-600" : "bg-gray-500"}
     `;
-    btnEstado.textContent = tarea.completada ? "Hecha" : "Pendiente";
-    columnaEstado.appendChild(btnEstado);
+    btnToggleEstado.textContent = tarea.completada ? "Hecha" : "Pendiente";
+    columnaEstado.appendChild(btnToggleEstado);
 
-    btnEstado.addEventListener('click', () => {
+    btnToggleEstado.addEventListener('click', () => {
         tarea.completada = !tarea.completada;
         guardarTareas();
         renderActual();
@@ -97,12 +89,12 @@ function crearTareaDOM(tarea) {
     columnaAcciones.className = "flex justify-start md:justify-center md:w-28";
     contenedorMeta.appendChild(columnaAcciones);
 
-    const btnBorrar = document.createElement('button');
-    btnBorrar.textContent = 'Eliminar';
-    btnBorrar.className = "cursor-pointer text-sm text-red-600 hover:text-red-800 transition-colors";
-    columnaAcciones.appendChild(btnBorrar);
+    const btnEliminar = document.createElement('button');
+    btnEliminar.textContent = 'Eliminar';
+    btnEliminar.className = "cursor-pointer text-sm text-red-600 hover:text-red-800 transition-colors";
+    columnaAcciones.appendChild(btnEliminar);
 
-    btnBorrar.addEventListener('click', () => {
+    btnEliminar.addEventListener('click', () => {
         const idx = tareas.indexOf(tarea);
         if (idx !== -1) tareas.splice(idx, 1);
         guardarTareas();
@@ -118,7 +110,7 @@ function getCategoriaActiva() {
 }
 
 function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
-    lista.innerHTML = '';
+    listaTareas.innerHTML = '';
     const busqueda = String(textoBusqueda ?? '').toLowerCase();
     const fragment = document.createDocumentFragment();
 
@@ -130,7 +122,7 @@ function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
         fragment.appendChild(crearTareaDOM(tarea));
     }
 
-    lista.appendChild(fragment);
+    listaTareas.appendChild(fragment);
 }
 
 function cargarTareas() {
@@ -152,7 +144,7 @@ function cargarTareas() {
 
 function agregarTarea(e) {
     e.preventDefault();
-    const texto = String(input.value ?? '').trim();
+    const texto = String(inputTarea.value ?? '').trim();
     const prioridad = selectPrioridad.value;
     const categoria = selectCategoria.value;
 
@@ -161,29 +153,36 @@ function agregarTarea(e) {
     tareas.push({ texto, prioridad, categoria, completada: false });
     guardarTareas();
     renderActual();
-    formulario.reset();
+    formTareas.reset();
 }
 
-formulario.addEventListener('submit', agregarTarea);
-
-document.getElementById('lista-categorias').addEventListener('click', (e) => {
-    const cat = e.target.closest('li[data-category]');
-    if (!cat) return;
-
-    if (cat.classList.contains('bg-indigo-900')) return;
-
-    categorias.forEach(c => {
-        c.classList.toggle('bg-indigo-900', c === cat);
-        c.classList.toggle('text-white', c === cat);
-        c.classList.toggle('bg-white', c !== cat);
-        c.classList.toggle('text-gray-800', c !== cat);
+function initApp() {
+    btnTema?.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
     });
 
-    mostrarTareas(cat.dataset.category, getTextoBusquedaActual());
-});
+    formTareas.addEventListener('submit', agregarTarea);
 
-inputBusqueda.addEventListener('input', () => {
-    renderActual();
-});
+    document.getElementById('lista-categorias').addEventListener('click', (e) => {
+        const cat = e.target.closest('li[data-category]');
+        if (!cat) return;
+        if (cat.classList.contains('bg-indigo-900')) return;
 
-cargarTareas();
+        itemsCategorias.forEach(item => {
+            item.classList.toggle('bg-indigo-900', item === cat);
+            item.classList.toggle('text-white', item === cat);
+            item.classList.toggle('bg-white', item !== cat);
+            item.classList.toggle('text-gray-800', item !== cat);
+        });
+
+        mostrarTareas(cat.dataset.category, getTextoBusquedaActual());
+    });
+
+    inputBusqueda.addEventListener('input', () => {
+        renderActual();
+    });
+
+    cargarTareas();
+}
+
+initApp();
