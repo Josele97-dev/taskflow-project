@@ -19,8 +19,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-function guardarTareas() {
-    localStorage.setItem('tareas', JSON.stringify(tareas));
+function guardarTareas(nextTareas = tareas) {
+    localStorage.setItem('tareas', JSON.stringify(nextTareas));
+}
+
+function normalizarTexto(valor) {
+    return String(valor ?? '').trim();
+}
+
+function getTextoBusquedaActual() {
+    return normalizarTexto(inputBusqueda.value).toLowerCase();
+}
+
+function renderActual() {
+    mostrarTareas(getCategoriaActiva(), getTextoBusquedaActual());
 }
 
 function crearTareaDOM(tarea) {
@@ -62,7 +74,7 @@ function crearTareaDOM(tarea) {
     btnEstado.addEventListener('click', () => {
         tarea.completada = !tarea.completada;
         guardarTareas();
-        mostrarTareas(getCategoriaActiva(), inputBusqueda.value.trim());
+        renderActual();
     });
 
     // Columna Prioridad (solo fija ancho en escritorio)
@@ -91,9 +103,10 @@ function crearTareaDOM(tarea) {
     columnaAcciones.appendChild(btnBorrar);
 
     btnBorrar.addEventListener('click', () => {
-        tareas.splice(tareas.indexOf(tarea), 1);
+        const idx = tareas.indexOf(tarea);
+        if (idx !== -1) tareas.splice(idx, 1);
         guardarTareas();
-        mostrarTareas(getCategoriaActiva(), inputBusqueda.value.trim());
+        renderActual();
     });
 
     return li;
@@ -134,7 +147,7 @@ function cargarTareas() {
         ...t,
         completada: typeof t.completada === 'boolean' ? t.completada : false
     }));
-    mostrarTareas();
+    renderActual();
 }
 
 function agregarTarea(e) {
@@ -147,7 +160,7 @@ function agregarTarea(e) {
 
     tareas.push({ texto, prioridad, categoria, completada: false });
     guardarTareas();
-    mostrarTareas(getCategoriaActiva(), inputBusqueda.value.trim());
+    renderActual();
     formulario.reset();
 }
 
@@ -166,11 +179,11 @@ document.getElementById('lista-categorias').addEventListener('click', (e) => {
         c.classList.toggle('text-gray-800', c !== cat);
     });
 
-    mostrarTareas(cat.dataset.category, inputBusqueda.value.trim());
+    mostrarTareas(cat.dataset.category, getTextoBusquedaActual());
 });
 
 inputBusqueda.addEventListener('input', () => {
-    mostrarTareas(getCategoriaActiva(), inputBusqueda.value.trim());
+    renderActual();
 });
 
 cargarTareas();
