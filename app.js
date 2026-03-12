@@ -5,19 +5,47 @@ const selectPrioridad = document.getElementById('input-prioridad');
 const selectCategoria = document.getElementById('input-categoria');
 const inputFecha = document.getElementById('input-fecha');
 const listaTareas = document.getElementById('lista-tareas');
-const itemsCategorias = document.querySelectorAll('#lista-categorias li');
 const inputBusqueda = document.getElementById('input-busqueda');
 const selectOrden = document.getElementById('input-orden');
 const btnTema = document.getElementById('colorbtn');
 
+// Categorías dinámicas
+const listaCategorias = document.getElementById('lista-categorias');
+const inputNuevaCategoria = document.getElementById('input-nueva-categoria');
+const btnAgregarCategoria = document.getElementById('btn-agregar-categoria');
+
+// Categorías base que NO se pueden eliminar
+const categoriasBase = ["Todas", "Trabajo", "Estudios", "Personal"];
+
 // Estado
 let tareas = [];
+let categoriasUsuario = []; // 🔥 NUEVO: categorías persistentes del usuario
 let criterioOrdenActual = 'creacion';
 
+// ------------------------------
 // Persistencia
+// ------------------------------
+
 function guardarTareas(nextTareas = tareas) {
     localStorage.setItem('tareas', JSON.stringify(nextTareas));
 }
+
+function guardarCategorias() {
+    localStorage.setItem('categoriasUsuario', JSON.stringify(categoriasUsuario));
+}
+
+function cargarCategorias() {
+    const raw = localStorage.getItem('categoriasUsuario');
+    try {
+        categoriasUsuario = raw ? JSON.parse(raw) : [];
+    } catch {
+        categoriasUsuario = [];
+    }
+}
+
+// ------------------------------
+// Utilidades
+// ------------------------------
 
 function normalizarTexto(valor) {
     return String(valor ?? '').trim();
@@ -31,6 +59,10 @@ function renderActual() {
     mostrarTareas(getCategoriaActiva(), getTextoBusquedaActual());
 }
 
+// ------------------------------
+// Ordenar tareas
+// ------------------------------
+
 function ordenarTareas(lista) {
     if (criterioOrdenActual === 'creacion') return lista;
 
@@ -38,19 +70,28 @@ function ordenarTareas(lista) {
 
     if (criterioOrdenActual === 'prioridad') {
         const pesoPrioridad = { alta: 0, media: 1, baja: 2 };
-        copia.sort((a, b) => (pesoPrioridad[a.prioridad] ?? 99) - (pesoPrioridad[b.prioridad] ?? 99));
-    } else if (criterioOrdenActual === 'texto') {
+        copia.sort((a, b) => pesoPrioridad[a.prioridad] - pesoPrioridad[b.prioridad]);
+    } 
+    else if (criterioOrdenActual === 'prioridad-inversa') {
+        const pesoPrioridad = { baja: 0, media: 1, alta: 2 };
+        copia.sort((a, b) => pesoPrioridad[a.prioridad] - pesoPrioridad[b.prioridad]);
+    }
+    else if (criterioOrdenActual === 'texto') {
         copia.sort((a, b) =>
             normalizarTexto(a.texto).localeCompare(normalizarTexto(b.texto), 'es', { sensitivity: 'base' })
         );
-    } else if (criterioOrdenActual === 'estado') {
+    } 
+    else if (criterioOrdenActual === 'estado') {
         copia.sort((a, b) => (a.completada === b.completada ? 0 : a.completada ? 1 : -1));
     }
 
     return copia;
 }
 
+// ------------------------------
 // Crear DOM de tarea
+// ------------------------------
+
 function crearTareaDOM(tarea) {
     const li = document.createElement('li');
     li.className = "flex flex-col md:flex-row md:items-center justify-between gap-3 bg-gray-200 p-3 rounded-md mt-3 transition-transform text-black hover:scale-[1.02] hover:shadow-md";
@@ -77,17 +118,10 @@ function crearTareaDOM(tarea) {
         contenedorTexto.appendChild(spanFecha);
     }
 
-    // 🔧 CONTENEDOR META AJUSTADO (más a la izquierda)
     const contenedorMeta = document.createElement('div');
-    contenedorMeta.className = `
-        flex items-center flex-wrap
-        gap-2 md:gap-4
-        md:justify-start
-        w-full md:w-auto
-    `;
+    contenedorMeta.className = "flex items-center flex-wrap gap-2 md:gap-4 md:justify-end w-full md:w-auto";
     li.appendChild(contenedorMeta);
 
-    // Estado
     const columnaEstado = document.createElement('div');
     columnaEstado.className = "flex justify-start md:justify-center md:w-24 mb-1 md:mb-0";
     contenedorMeta.appendChild(columnaEstado);
@@ -106,7 +140,6 @@ function crearTareaDOM(tarea) {
         renderActual();
     });
 
-    // Prioridad
     const columnaPrioridad = document.createElement('div');
     columnaPrioridad.className = "flex justify-start md:justify-center md:w-24 mb-1 md:mb-0";
     contenedorMeta.appendChild(columnaPrioridad);
@@ -121,7 +154,6 @@ function crearTareaDOM(tarea) {
     spanPrioridad.textContent = tarea.prioridad.charAt(0).toUpperCase() + tarea.prioridad.slice(1);
     columnaPrioridad.appendChild(spanPrioridad);
 
-    // Acciones
     const columnaAcciones = document.createElement('div');
     columnaAcciones.className = "flex justify-start md:justify-center md:w-24";
     contenedorMeta.appendChild(columnaAcciones);
@@ -141,6 +173,10 @@ function crearTareaDOM(tarea) {
     return li;
 }
 
+// ------------------------------
+// Mostrar tareas
+// ------------------------------
+
 function getCategoriaActiva() {
     const activa = document.querySelector('#lista-categorias li.bg-indigo-900[data-category]');
     return activa?.dataset?.category ?? 'Todas';
@@ -148,14 +184,14 @@ function getCategoriaActiva() {
 
 function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
     listaTareas.innerHTML = '';
-    const busqueda = String(textoBusqueda ?? '').toLowerCase();
+    const busqueda = textoBusqueda.toLowerCase();
     const fragment = document.createDocumentFragment();
 
     const listaOrdenada = ordenarTareas(tareas);
 
     for (const tarea of listaOrdenada) {
         const coincideCategoria = (filtro === 'Todas' || tarea.categoria === filtro);
-        const coincideTexto = String(tarea.texto ?? '').toLowerCase().includes(busqueda);
+        const coincideTexto = tarea.texto.toLowerCase().includes(busqueda);
         if (!coincideCategoria || !coincideTexto) continue;
 
         fragment.appendChild(crearTareaDOM(tarea));
@@ -163,6 +199,10 @@ function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
 
     listaTareas.appendChild(fragment);
 }
+
+// ------------------------------
+// Cargar tareas
+// ------------------------------
 
 function cargarTareas() {
     const raw = localStorage.getItem('tareas');
@@ -174,78 +214,184 @@ function cargarTareas() {
         parsed = [];
     }
 
-    if (!Array.isArray(parsed)) {
-        tareas = [];
-        renderActual();
-        return;
-    }
-
-    tareas = parsed.map((t) => ({
-        ...t,
-        completada: typeof t?.completada === 'boolean' ? t.completada : false,
-        fecha: t?.fecha || null,
-    }));
+    tareas = Array.isArray(parsed)
+        ? parsed.map(t => ({
+            ...t,
+            completada: typeof t.completada === 'boolean' ? t.completada : false,
+            fecha: t.fecha || null,
+        }))
+        : [];
 
     renderActual();
 }
 
+// ------------------------------
+// Añadir tarea
+// ------------------------------
+
 function agregarTarea(e) {
     e.preventDefault();
-    const texto = String(inputTarea.value ?? '').trim();
+
+    const texto = inputTarea.value.trim();
     const prioridad = selectPrioridad.value;
     const categoria = selectCategoria.value;
     const fecha = inputFecha.value || null;
 
     if (texto === '') return;
 
+    // 🔥 Guardar selección del usuario ANTES del reset
+    const ultimaCategoria = categoria;
+    const ultimaPrioridad = prioridad;
+
     tareas.push({ texto, prioridad, categoria, fecha, completada: false });
     guardarTareas();
     renderActual();
+
+    // 🔥 Reset del formulario
     formTareas.reset();
+
+    // 🔥 Restaurar selección del usuario
+    selectCategoria.value = ultimaCategoria;
+    selectPrioridad.value = ultimaPrioridad;
 }
 
+
+
+// ------------------------------
+// CATEGORÍAS DINÁMICAS
+// ------------------------------
+
+function crearCategoriaDOM(nombre) {
+    const li = document.createElement('li');
+    li.dataset.category = nombre;
+
+    li.className = `
+        relative
+        px-2 py-1 rounded w-full text-center
+        bg-white text-gray-800 dark:bg-gray-600 dark:text-white
+        transition-all duration-300 hover:scale-105 hover:shadow-md cursor-pointer
+    `;
+
+    const span = document.createElement('span');
+    span.textContent = nombre;
+    li.appendChild(span);
+
+    if (!categoriasBase.includes(nombre)) {
+        const btnEliminar = document.createElement('button');
+        btnEliminar.textContent = "✖";
+        btnEliminar.className = `
+            absolute right-2 top-1/2 -translate-y-1/2
+            text-red-600 hover:text-red-800
+        `;
+        btnEliminar.addEventListener('click', (e) => {
+            e.stopPropagation();
+            eliminarCategoria(nombre, li);
+        });
+        li.appendChild(btnEliminar);
+    }
+
+    li.addEventListener('click', () => seleccionarCategoria(li));
+
+    return li;
+}
+
+function agregarCategoriaAlSelect(nombre) {
+    const option = document.createElement('option');
+    option.value = nombre;
+    option.textContent = nombre;
+    selectCategoria.appendChild(option);
+}
+
+function eliminarCategoria(nombre, li) {
+    li.remove();
+
+    const option = selectCategoria.querySelector(`option[value="${nombre}"]`);
+    if (option) option.remove();
+
+    categoriasUsuario = categoriasUsuario.filter(c => c !== nombre);
+    guardarCategorias();
+
+    if (getCategoriaActiva() === nombre) {
+        const todas = listaCategorias.querySelector('li[data-category="Todas"]');
+        seleccionarCategoria(todas);
+    }
+}
+
+function seleccionarCategoria(li) {
+    const items = listaCategorias.querySelectorAll('li');
+
+    items.forEach(item => {
+        const activo = item === li;
+        item.classList.toggle('bg-indigo-900', activo);
+        item.classList.toggle('dark:bg-indigo-400', activo);
+        item.classList.toggle('text-white', activo);
+        item.classList.toggle('bg-white', !activo);
+        item.classList.toggle('dark:bg-gray-600', !activo);
+        item.classList.toggle('text-gray-800', !activo);
+    });
+
+    mostrarTareas(li.dataset.category, getTextoBusquedaActual());
+}
+
+function agregarCategoria() {
+    const nombre = inputNuevaCategoria.value.trim();
+    if (nombre === '') return;
+
+    if (categoriasBase.includes(nombre) || categoriasUsuario.includes(nombre)) return;
+
+    categoriasUsuario.push(nombre);
+    guardarCategorias();
+
+    const li = crearCategoriaDOM(nombre);
+    listaCategorias.appendChild(li);
+
+    agregarCategoriaAlSelect(nombre);
+
+    inputNuevaCategoria.value = '';
+}
+
+// ------------------------------
+// INIT
+// ------------------------------
+
 function initApp() {
-    btnTema?.addEventListener('click', () => {
+    btnTema.addEventListener('click', () => {
         document.documentElement.classList.toggle('dark');
     });
 
     formTareas.addEventListener('submit', agregarTarea);
 
-    selectOrden?.addEventListener('change', () => {
-        const valor = selectOrden.value;
-        if (['creacion', 'prioridad', 'texto', 'estado'].includes(valor)) {
-            criterioOrdenActual = valor;
-            renderActual();
-        }
-    });
-
-    document.getElementById('lista-categorias').addEventListener('click', (e) => {
-        const cat = e.target.closest('li[data-category]');
-        if (!cat) return;
-        if (cat.classList.contains('bg-indigo-900')) return;
-
-        itemsCategorias.forEach(item => {
-            const activo = item === cat;
-            item.classList.toggle('bg-indigo-900', activo);
-            item.classList.toggle('dark:bg-indigo-400', activo);
-            item.classList.toggle('text-white', activo);
-            item.classList.toggle('bg-white', !activo);
-            item.classList.toggle('dark:bg-gray-600', !activo);
-            item.classList.toggle('text-gray-800', !activo);
-        });
-
-        mostrarTareas(cat.dataset.category, getTextoBusquedaActual());
-    });
-
-    inputBusqueda.addEventListener('input', () => {
+    selectOrden.addEventListener('change', () => {
+        criterioOrdenActual = selectOrden.value;
         renderActual();
     });
 
-    const categoriaTodas = document.querySelector('#lista-categorias li[data-category="Todas"]');
-    if (categoriaTodas) {
-        categoriaTodas.classList.add('bg-indigo-900', 'dark:bg-indigo-400', 'text-white');
-        categoriaTodas.classList.remove('bg-white', 'dark:bg-gray-600', 'text-gray-800');
-    }
+    listaCategorias.addEventListener('click', (e) => {
+        const li = e.target.closest('li[data-category]');
+        if (li) seleccionarCategoria(li);
+    });
+
+    inputBusqueda.addEventListener('input', renderActual);
+
+    btnAgregarCategoria.addEventListener('click', agregarCategoria);
+
+    inputNuevaCategoria.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            agregarCategoria();
+        }
+    });
+
+    cargarCategorias();
+
+    categoriasUsuario.forEach(nombre => {
+        const li = crearCategoriaDOM(nombre);
+        listaCategorias.appendChild(li);
+        agregarCategoriaAlSelect(nombre);
+    });
+
+    const categoriaTodas = listaCategorias.querySelector('li[data-category="Todas"]');
+    if (categoriaTodas) seleccionarCategoria(categoriaTodas);
 
     cargarTareas();
 }
