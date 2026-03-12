@@ -313,10 +313,11 @@ function crearCategoriaDOM(nombre) {
     const li = document.createElement('li');
     li.dataset.category = nombre;
 
+    // Fondo de no seleccionada igual que categorías base
     li.className = `
         relative
         px-2 py-1 rounded w-full text-center
-        bg-white text-gray-800 dark:bg-gray-600 dark:text-white
+        bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-white
         transition-all duration-300 hover:scale-105 hover:shadow-md cursor-pointer
     `;
 
@@ -386,7 +387,7 @@ function seleccionarCategoria(li) {
         item.classList.toggle('bg-indigo-900', activo);
         item.classList.toggle('dark:bg-indigo-400', activo);
         item.classList.toggle('text-white', activo);
-        item.classList.toggle('bg-white', !activo);
+        item.classList.toggle('bg-gray-200', !activo);        
         item.classList.toggle('dark:bg-gray-600', !activo);
         item.classList.toggle('text-gray-800', !activo);
     });

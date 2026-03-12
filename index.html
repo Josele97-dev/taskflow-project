@@ -38,7 +38,7 @@
 
   <!-- Botón modo oscuro -->
   <button id="colorbtn"
-    class="mt-6 relative w-20 h-10 bg-gray-300 dark:bg-gray-700 rounded-full shadow-inner 
+    class="mt-6 relative w-20 h-10 bg-gray-300 dark:bg-gray-500 rounded-full shadow-inner 
            flex items-center px-1 transition-all duration-500 hover:scale-110">
 
     <div class="dot w-8 h-8 bg-white dark:bg-yellow-400 rounded-full shadow-md 
@@ -48,7 +48,6 @@
     <span class="absolute right-1 text-gray-700 text-sm dark:text-yellow-300">🌙</span>
   </button>
 </header>
-
 
 <!-- Contenedor principal: aside (categorías) + sección de tareas -->
 <main class="flex flex-col md:flex-row md:items-start gap-4 p-4 transition-colors duration-500">
@@ -60,16 +59,16 @@
     <!-- Lista de categorías (base + dinámicas) -->
     <ul id="lista-categorias" class="list-none flex flex-col gap-1">
       <!-- Categorías base -->
-      <li class="cursor-pointer px-2 py-1 rounded w-full text-center bg-white text-gray-800 dark:bg-gray-600 dark:text-white transition-all duration-300"
+      <li class="cursor-pointer px-2 py-1 rounded w-full text-center bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-white transition-all duration-300"
           data-category="Todas">Todas</li>
 
-      <li class="cursor-pointer px-2 py-1 rounded w-full text-center bg-white text-gray-800 dark:bg-gray-600 dark:text-white transition-all duration-300"
+      <li class="cursor-pointer px-2 py-1 rounded w-full text-center bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-white transition-all duration-300"
           data-category="Trabajo">Trabajo</li>
 
-      <li class="cursor-pointer px-2 py-1 rounded w-full text-center bg-white text-gray-800 dark:bg-gray-600 dark:text-white transition-all duration-300"
+      <li class="cursor-pointer px-2 py-1 rounded w-full text-center bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-white transition-all duration-300"
           data-category="Estudios">Estudios</li>
 
-      <li class="cursor-pointer px-2 py-1 rounded w-full text-center bg-white text-gray-800 dark:bg-gray-600 dark:text-white transition-all duration-300"
+      <li class="cursor-pointer px-2 py-1 rounded w-full text-center bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-white transition-all duration-300"
           data-category="Personal">Personal</li>
     </ul>
 
