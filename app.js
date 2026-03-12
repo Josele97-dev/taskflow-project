@@ -422,6 +422,11 @@ function agregarCategoria() {
  * Inicializa la aplicación: eventos, carga de datos y renderizado inicial.
  */
 function initApp() {
+
+    // Fecha mínima = hoy
+    const hoy = new Date().toISOString().split("T")[0];
+    inputFecha.min = hoy;
+
     btnTema.addEventListener('click', () => {
         document.documentElement.classList.toggle('dark');
     });
