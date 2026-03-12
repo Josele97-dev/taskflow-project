@@ -97,3 +97,65 @@ TASKFLOW-PROJECT/
 
 7. Marca tareas como hechas o elimínalas.
 
+### Ejemplos de uso
+
+  #### Crear una tarea básica
+  
+  1. Escribe en el campo “Nueva tarea”:
+     Preparar presentación del proyecto
+
+  2. Selecciona prioridad:
+     Alta
+
+  3. Selecciona categoría:
+     Trabajo
+
+  4. (Opcional) Selecciona fecha límite:
+      2025-09-28
+
+  5. Pulsa Añadir
+
+  La tarea aparecerá en la lista con estado “Pendiente” y prioridad alta. Además informará de la categoría de la tarea que es trabajo y su fecha límite marcada que es 2025-09-28
+
+  #### Crear una categoría personalizada
+
+  1. En la barra lateral, escribe en “Nueva categoría”:
+     Compras
+
+  2. Pulsar Enter o el botón +
+
+  3. La categoría aparecerá en la lista y en el selector del formulario.
+
+  #### Filtrar tareas por categoría
+  
+  1. Haz clic en una categoría, por ejemplo:
+     Estudios
+
+  2. Solo se mostrarán las tareas asociadas a esa categoría.
+
+  #### Buscar tareas por texto
+  
+  1. En el campo “Buscar tareas…”, escribe:
+     Examen
+
+  2. La lista se actualizará mostrando solo las tareas que contengan esa palabra.
+
+  #### Ordenar tareas
+
+  1. En el selector de ordenación, elige:
+  Prioridad (alta → baja)
+
+  2. Las tareas se reorganizarán automáticamente.
+
+  #### Marcar una tarea como hecha
+
+  1. Pulsa el botón “Pendiente” en la tarea.
+
+  2. Cambiará a “Hecha”.
+
+  #### Eliminar una tarea
+
+  1. Pulsa el botón “Eliminar” en la tarea deseada.
+
+  2. La tarea desaparecerá de la lista y del almacenamiento local.
+
