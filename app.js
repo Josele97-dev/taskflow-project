@@ -19,21 +19,31 @@ const categoriasBase = ["Todas", "Trabajo", "Estudios", "Personal"];
 
 // Estado
 let tareas = [];
-let categoriasUsuario = []; // 🔥 NUEVO: categorías persistentes del usuario
+let categoriasUsuario = [];
 let criterioOrdenActual = 'creacion';
 
 // ------------------------------
 // Persistencia
 // ------------------------------
 
+/**
+ * Guarda la lista de tareas en localStorage.
+ * @param {Array} nextTareas - Lista de tareas a guardar.
+ */
 function guardarTareas(nextTareas = tareas) {
     localStorage.setItem('tareas', JSON.stringify(nextTareas));
 }
 
+/**
+ * Guarda las categorías creadas por el usuario en localStorage.
+ */
 function guardarCategorias() {
     localStorage.setItem('categoriasUsuario', JSON.stringify(categoriasUsuario));
 }
 
+/**
+ * Carga las categorías del usuario desde localStorage.
+ */
 function cargarCategorias() {
     const raw = localStorage.getItem('categoriasUsuario');
     try {
@@ -47,14 +57,26 @@ function cargarCategorias() {
 // Utilidades
 // ------------------------------
 
+/**
+ * Normaliza un texto eliminando espacios y valores nulos.
+ * @param {string} valor - Texto a normalizar.
+ * @returns {string} Texto limpio.
+ */
 function normalizarTexto(valor) {
     return String(valor ?? '').trim();
 }
 
+/**
+ * Obtiene el texto actual del campo de búsqueda en minúsculas.
+ * @returns {string} Texto de búsqueda.
+ */
 function getTextoBusquedaActual() {
     return normalizarTexto(inputBusqueda.value).toLowerCase();
 }
 
+/**
+ * Renderiza la lista de tareas según categoría y búsqueda.
+ */
 function renderActual() {
     mostrarTareas(getCategoriaActiva(), getTextoBusquedaActual());
 }
@@ -63,6 +85,11 @@ function renderActual() {
 // Ordenar tareas
 // ------------------------------
 
+/**
+ * Ordena una lista de tareas según el criterio seleccionado.
+ * @param {Array} lista - Lista de tareas.
+ * @returns {Array} Lista ordenada.
+ */
 function ordenarTareas(lista) {
     if (criterioOrdenActual === 'creacion') return lista;
 
@@ -92,6 +119,11 @@ function ordenarTareas(lista) {
 // Crear DOM de tarea
 // ------------------------------
 
+/**
+ * Crea y devuelve el elemento HTML que representa una tarea.
+ * @param {Object} tarea - Objeto con los datos de la tarea.
+ * @returns {HTMLElement} Elemento <li> con la tarea.
+ */
 function crearTareaDOM(tarea) {
     const li = document.createElement('li');
     li.className = "flex flex-col md:flex-row md:items-center justify-between gap-3 bg-gray-200 p-3 rounded-md mt-3 transition-transform text-black hover:scale-[1.02] hover:shadow-md";
@@ -177,11 +209,20 @@ function crearTareaDOM(tarea) {
 // Mostrar tareas
 // ------------------------------
 
+/**
+ * Obtiene la categoría actualmente seleccionada.
+ * @returns {string} Categoría activa.
+ */
 function getCategoriaActiva() {
     const activa = document.querySelector('#lista-categorias li.bg-indigo-900[data-category]');
     return activa?.dataset?.category ?? 'Todas';
 }
 
+/**
+ * Muestra las tareas filtradas por categoría y texto.
+ * @param {string} filtro - Categoría seleccionada.
+ * @param {string} textoBusqueda - Texto a buscar.
+ */
 function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
     listaTareas.innerHTML = '';
     const busqueda = textoBusqueda.toLowerCase();
@@ -204,6 +245,9 @@ function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
 // Cargar tareas
 // ------------------------------
 
+/**
+ * Carga las tareas desde localStorage y las prepara para su uso.
+ */
 function cargarTareas() {
     const raw = localStorage.getItem('tareas');
     let parsed = [];
@@ -229,6 +273,10 @@ function cargarTareas() {
 // Añadir tarea
 // ------------------------------
 
+/**
+ * Añade una nueva tarea a la lista y la guarda.
+ * @param {Event} e - Evento del formulario.
+ */
 function agregarTarea(e) {
     e.preventDefault();
 
@@ -239,7 +287,6 @@ function agregarTarea(e) {
 
     if (texto === '') return;
 
-    // 🔥 Guardar selección del usuario ANTES del reset
     const ultimaCategoria = categoria;
     const ultimaPrioridad = prioridad;
 
@@ -247,20 +294,21 @@ function agregarTarea(e) {
     guardarTareas();
     renderActual();
 
-    // 🔥 Reset del formulario
     formTareas.reset();
 
-    // 🔥 Restaurar selección del usuario
     selectCategoria.value = ultimaCategoria;
     selectPrioridad.value = ultimaPrioridad;
 }
-
-
 
 // ------------------------------
 // CATEGORÍAS DINÁMICAS
 // ------------------------------
 
+/**
+ * Crea un elemento <li> para una categoría.
+ * @param {string} nombre - Nombre de la categoría.
+ * @returns {HTMLElement} Elemento <li>.
+ */
 function crearCategoriaDOM(nombre) {
     const li = document.createElement('li');
     li.dataset.category = nombre;
@@ -295,6 +343,10 @@ function crearCategoriaDOM(nombre) {
     return li;
 }
 
+/**
+ * Añade una categoría al selector del formulario.
+ * @param {string} nombre - Nombre de la categoría.
+ */
 function agregarCategoriaAlSelect(nombre) {
     const option = document.createElement('option');
     option.value = nombre;
@@ -302,6 +354,11 @@ function agregarCategoriaAlSelect(nombre) {
     selectCategoria.appendChild(option);
 }
 
+/**
+ * Elimina una categoría creada por el usuario.
+ * @param {string} nombre - Nombre de la categoría.
+ * @param {HTMLElement} li - Elemento HTML de la categoría.
+ */
 function eliminarCategoria(nombre, li) {
     li.remove();
 
@@ -317,6 +374,10 @@ function eliminarCategoria(nombre, li) {
     }
 }
 
+/**
+ * Marca una categoría como seleccionada y actualiza la lista de tareas.
+ * @param {HTMLElement} li - Elemento HTML de la categoría.
+ */
 function seleccionarCategoria(li) {
     const items = listaCategorias.querySelectorAll('li');
 
@@ -333,6 +394,9 @@ function seleccionarCategoria(li) {
     mostrarTareas(li.dataset.category, getTextoBusquedaActual());
 }
 
+/**
+ * Crea una nueva categoría personalizada.
+ */
 function agregarCategoria() {
     const nombre = inputNuevaCategoria.value.trim();
     if (nombre === '') return;
@@ -354,6 +418,9 @@ function agregarCategoria() {
 // INIT
 // ------------------------------
 
+/**
+ * Inicializa la aplicación: eventos, carga de datos y renderizado inicial.
+ */
 function initApp() {
     btnTema.addEventListener('click', () => {
         document.documentElement.classList.toggle('dark');

@@ -4,7 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TaskFlow</title>
+
+  <!-- TailwindCSS desde CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Configuración de Tailwind para habilitar modo oscuro por clase -->
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -15,12 +19,15 @@
   </script>
 </head>
 
+<!-- Tema claro/oscuro controlado por JS -->
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 font-sans transition-colors duration-500">
 
+<!-- Encabezado principal con título y botón de modo oscuro -->
 <header class="bg-indigo-900 text-white py-6 flex flex-col items-center text-center transition-colors duration-500">
   <h1 class="text-3xl font-bold">TaskFlow</h1>
   <p>Ahora puedes organizar tus tareas</p>
 
+  <!-- Botón para activar/desactivar modo oscuro -->
   <button id="colorbtn"
     class="mt-6 relative w-16 h-8 bg-gray-300 dark:bg-gray-600 rounded-full shadow-inner 
            flex items-center px-1 
@@ -31,12 +38,16 @@
   </button>
 </header>
 
+<!-- Contenedor principal: aside (categorías) + sección de tareas -->
 <main class="flex flex-col md:flex-row md:items-start gap-4 p-4 transition-colors duration-500">
 
+  <!-- Barra lateral con categorías -->
   <aside id="aside" class="w-full md:w-64 bg-white dark:bg-gray-700 p-4 rounded-lg shadow transition-colors duration-500">
     <h2 class="text-lg dark:text-white font-semibold mb-2 transition-colors duration-500">Categorías</h2>
 
+    <!-- Lista de categorías (base + dinámicas) -->
     <ul id="lista-categorias" class="list-none flex flex-col gap-1">
+      <!-- Categorías base -->
       <li class="cursor-pointer px-2 py-1 rounded w-full text-center bg-white text-gray-800 dark:bg-gray-600 dark:text-white transition-all duration-300"
           data-category="Todas">Todas</li>
 
@@ -50,7 +61,7 @@
           data-category="Personal">Personal</li>
     </ul>
 
-    <!-- NUEVA FUNCIÓN: Añadir categorías -->
+    <!-- Formulario para añadir nuevas categorías -->
     <div class="mt-4 flex items-center gap-2">
       <input id="input-nueva-categoria" 
              type="text" 
@@ -61,6 +72,7 @@
                     hover:border-indigo-500 hover:shadow-md
                     focus:outline-none focus:ring-2 focus:ring-indigo-500">
 
+      <!-- Botón para añadir categoría -->
       <button id="btn-agregar-categoria"
               class="w-10 h-10 flex items-center justify-center bg-indigo-900 dark:bg-indigo-400 text-white rounded-full hover:scale-110 transition">
         +
@@ -69,10 +81,13 @@
 
   </aside>
 
+  <!-- Sección principal: formulario + lista de tareas -->
   <section id="section" class="flex-1 bg-white dark:bg-gray-700 dark:text-white p-4 rounded-lg shadow transition-colors duration-500">
 
+    <!-- Formulario para crear nuevas tareas -->
     <form id="formulario-tareas" class="flex flex-wrap gap-2 mb-4 md:items-end">
 
+      <!-- Campo: texto de la tarea -->
       <div class="flex flex-col flex-1 min-w-[220px]">
         <span class="text-xs font-semibold text-gray-700 dark:text-gray-200 tracking-wide mb-1">Nueva tarea</span>
         <input type="text" id="input-tarea" placeholder="Escribe una nueva tarea..." required
@@ -81,6 +96,7 @@
                  focus:outline-none focus:ring-2 focus:ring-indigo-500">
       </div>
     
+      <!-- Selector de prioridad -->
       <div class="flex flex-col min-w-[140px] md:w-40">
         <span class="text-xs font-semibold text-gray-700 dark:text-gray-200 tracking-wide mb-1">Prioridad</span>
         <select id="input-prioridad"
@@ -93,6 +109,7 @@
         </select>
       </div>
     
+      <!-- Selector de categoría -->
       <div class="flex flex-col min-w-[140px] md:w-40">
         <span class="text-xs font-semibold text-gray-700 dark:text-gray-200 tracking-wide mb-1">Categoría</span>
         <select id="input-categoria"
@@ -105,6 +122,7 @@
         </select>
       </div>
     
+      <!-- Fecha límite -->
       <div class="flex flex-col min-w-[140px] md:w-40">
         <span class="text-xs font-semibold text-gray-700 dark:text-gray-200 tracking-wide mb-1">Fecha límite (opcional)</span>
         <input type="date" id="input-fecha"
@@ -113,6 +131,7 @@
                  focus:outline-none focus:ring-2 focus:ring-indigo-500">
       </div>
     
+      <!-- Botón para añadir tarea -->
       <button type="submit"
         class="h-12 bg-indigo-900 dark:bg-indigo-400 text-white px-4 rounded self-end md:self-auto
                transition-colors duration-500 hover:bg-indigo-800 dark:hover:bg-indigo-300
@@ -123,6 +142,7 @@
     
     </form>
     
+    <!-- Barra de búsqueda + selector de orden -->
     <div class="mb-4 flex flex-wrap gap-2 items-center">
       <input type="text" id="input-busqueda" placeholder="Buscar tareas..."
         class="h-12 flex-1 min-w-[180px] p-2 border-2 border-gray-400 dark:border-gray-500 rounded bg-white dark:bg-gray-600 text-gray-800 dark:text-white
@@ -141,22 +161,21 @@
       </select>
     </div>
 
-    <!-- Encabezado de la lista de tareas -->
+    <!-- Encabezado visible solo en escritorio -->
     <div class="hidden md:flex font-semibold text-gray-700 dark:text-gray-200 px-2 mt-4 mb-2">
       <span class="flex-1">Lista de tareas</span>
-      <span class="w-32 texst-center">Estado</span>
+      <span class="w-32 text-center">Estado</span>
       <span class="w-28 text-center">Prioridad</span>
       <span class="w-28 text-center">Acciones</span>
     </div>
     
-    <ul id="lista-tareas" class="transition-colors duration-500"></ul>
-    
-
+    <!-- Lista donde se insertan las tareas dinámicamente -->
     <ul id="lista-tareas" class="transition-colors duration-500"></ul>
 
   </section>
 </main>
 
+<!-- Lógica de la aplicación -->
 <script src="app.js" defer></script>
 </body>
 </html>
