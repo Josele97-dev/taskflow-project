@@ -79,6 +79,23 @@ function getTextoBusquedaActual() {
  */
 function renderActual() {
     mostrarTareas(getCategoriaActiva(), getTextoBusquedaActual());
+    actualizarContador()
+}
+
+/**
+ * Actualiza el contador de tareas pendientes en la cabecera.
+ * Muestra "¡Sin tareas!" si no hay pendientes, o el número de pendientes en caso contrario.
+ */
+function actualizarContador() {
+    const pendientes = tareas.filter(t => !t.completada).length;
+    const contador = document.getElementById('contador-pendientes');
+    if (!contador) return;
+
+    if (pendientes === 0) {
+        contador.textContent = "✅ ¡Sin tareas!";
+    } else {
+        contador.textContent = `⏳ ${pendientes} tarea${pendientes === 1 ? '' : 's'} pendiente${pendientes === 1 ? '' : 's'}`;
+    }
 }
 
 // ------------------------------
