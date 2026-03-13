@@ -14,24 +14,27 @@
       darkMode: 'class',
       theme: {
         extend: {},
-      }
+      },
     }
   </script>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 
-<!-- Tema claro/oscuro controlado por JS -->
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 font-sans transition-colors duration-500">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 transition-colors duration-500" style="font-family: 'Inter', sans-serif;">
 
-<!-- Encabezado principal con título y botón de modo oscuro -->
 <header class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-700 
                dark:from-gray-800 dark:via-gray-700 dark:to-gray-600
                text-white py-10 px-4 flex flex-col items-center text-center 
                shadow-xl rounded-b-3xl transition-all duration-500">
 
   <h1 class="text-4xl font-extrabold tracking-wide drop-shadow-lg flex items-center gap-1">
-  <span class="text-4xl">📋</span>
-  TaskFlow
-</h1>
+    <span class="text-4xl">📋</span>
+    TaskFlow
+  </h1>
 
   <p class="mt-1 text-indigo-200 dark:text-gray-200 text-sm opacity-90">
     Ahora puedes organizar tus tareas
@@ -50,16 +53,13 @@
   </button>
 </header>
 
-<!-- Contenedor principal: aside (categorías) + sección de tareas -->
 <main class="flex flex-col md:flex-row md:items-start gap-4 p-4 transition-colors duration-500">
 
-  <!-- Barra lateral con categorías -->
+  <!-- Categorías -->
   <aside id="aside" class="w-full md:w-64 bg-white dark:bg-gray-700 p-4 rounded-lg shadow transition-colors duration-500">
     <h2 class="text-lg dark:text-white font-semibold mb-2 transition-colors duration-500">Categorías</h2>
 
-    <!-- Lista de categorías (base + dinámicas) -->
     <ul id="lista-categorias" class="list-none flex flex-col gap-1">
-      <!-- Categorías base -->
       <li class="cursor-pointer px-2 py-1 rounded w-full text-center bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-white transition-transform duration-300 hover:scale-105"
           data-category="Todas">Todas</li>
 
@@ -73,80 +73,78 @@
           data-category="Personal">Personal</li>
     </ul>
 
-    <!-- Formulario para añadir nuevas categorías -->
-  <div class="mt-4 relative">
-    <input id="input-nueva-categoria"
-           type="text"
-           placeholder="Nueva categoría..."
-           class="w-full pr-10 p-2 border-2 border-gray-400 dark:border-gray-500 rounded
-                bg-white dark:bg-gray-600 text-gray-800 dark:text-white
-                transition-colors duration-500
-                hover:border-indigo-500 hover:shadow-md
-                focus:outline-none focus:ring-2 focus:ring-indigo-500">
+    <!-- Nueva categoría -->
+    <div class="mt-4 relative">
+      <input id="input-nueva-categoria"
+             type="text"
+             placeholder="Nueva categoría..."
+             class="w-full pr-10 p-2 border-2 border-gray-400 dark:border-gray-500 rounded
+                    bg-white dark:bg-gray-600 text-gray-800 dark:text-white
+                    transition-colors duration-500
+                    hover:border-indigo-500 dark:hover:border-indigo-300 hover:shadow-md
+                    focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-300">
 
-    <button id="btn-agregar-categoria"
-                class="absolute right-2 top-1/2 -translate-y-1/2
-                 w-6 h-6 flex items-center justify-center
-                 bg-indigo-900 dark:bg-indigo-400 text-white text-sm font-bold
-                 rounded-full hover:scale-110 transition">
-    +
-    </button>
-
-  </div>
+      <button id="btn-agregar-categoria"
+              class="absolute right-2 top-1/2 -translate-y-1/2
+                     w-6 h-6 flex items-center justify-center
+                     bg-indigo-900 dark:bg-indigo-400 text-white text-sm font-bold
+                     rounded-full hover:scale-110 transition">
+        +
+      </button>
+    </div>
 
   </aside>
 
-  <!-- Sección principal: formulario + lista de tareas -->
+  <!-- Sección principal -->
   <section id="section" class="flex-1 bg-white dark:bg-gray-700 dark:text-white p-4 rounded-lg shadow transition-colors duration-500">
 
-    <!-- Formulario para crear nuevas tareas -->
     <form id="formulario-tareas" class="flex flex-wrap gap-2 mb-4 md:items-end">
 
-      <!-- Campo: texto de la tarea -->
+      <!-- Nueva tarea -->
       <div class="flex flex-col flex-1 min-w-[220px]">
         <span class="text-xs font-semibold text-gray-700 dark:text-gray-200 tracking-wide mb-1">Nueva tarea</span>
         <input type="text" id="input-tarea" placeholder="Escribe una nueva tarea..." required
           class="h-12 p-2 border-2 border-gray-400 dark:border-gray-500 rounded bg-white dark:bg-gray-600 text-gray-800 dark:text-white
-                 transition-colors duration-500 hover:border-indigo-500 hover:shadow-md
-                 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                 transition-colors duration-500 hover:border-indigo-500 dark:hover:border-indigo-300 hover:shadow-md
+                 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-300">
       </div>
-    
-      <!-- Selector de prioridad -->
+
+      <!-- Prioridad -->
       <div class="flex flex-col min-w-[140px] md:w-40">
         <span class="text-xs font-semibold text-gray-700 dark:text-gray-200 tracking-wide mb-1">Prioridad</span>
         <select id="input-prioridad"
           class="h-12 p-2 border-2 border-gray-400 dark:border-gray-500 rounded bg-white dark:bg-gray-600 text-gray-800 dark:text-white
-                 transition-colors duration-500 hover:border-indigo-500 hover:shadow-md
-                 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                 transition-colors duration-500 hover:border-indigo-500 dark:hover:border-indigo-300 hover:shadow-md
+                 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-300">
           <option value="alta">Alta</option>
           <option value="media" selected>Media</option>
           <option value="baja">Baja</option>
         </select>
       </div>
-    
-      <!-- Selector de categoría -->
+
+      <!-- Categoría -->
       <div class="flex flex-col min-w-[140px] md:w-40">
         <span class="text-xs font-semibold text-gray-700 dark:text-gray-200 tracking-wide mb-1">Categoría</span>
         <select id="input-categoria"
           class="h-12 p-2 border-2 border-gray-400 dark:border-gray-500 rounded bg-white dark:bg-gray-600 text-gray-800 dark:text-white
-                 transition-colors duration-500 hover:border-indigo-500 hover:shadow-md
-                 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                 transition-colors duration-500 hover:border-indigo-500 dark:hover:border-indigo-300 hover:shadow-md
+                 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-300">
           <option value="Trabajo">Trabajo</option>
           <option value="Estudios">Estudios</option>
           <option value="Personal">Personal</option>
         </select>
       </div>
-    
-      <!-- Fecha límite -->
+
+      <!-- Fecha -->
       <div class="flex flex-col min-w-[140px] md:w-40">
         <span class="text-xs font-semibold text-gray-700 dark:text-gray-200 tracking-wide mb-1">Fecha límite (opcional)</span>
         <input type="date" id="input-fecha" max="2050-12-31"
           class="h-12 p-2 border-2 border-gray-400 dark:border-gray-500 rounded bg-white dark:bg-gray-600 text-gray-800 dark:text-white
-                 transition-colors duration-500 hover:border-indigo-500 hover:shadow-md
-                 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                 transition-colors duration-500 hover:border-indigo-500 dark:hover:border-indigo-300 hover:shadow-md
+                 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-300">
       </div>
-    
-      <!-- Botón para añadir tarea -->
+
+      <!-- Botón añadir -->
       <button type="submit"
         class="h-12 bg-indigo-900 dark:bg-indigo-400 text-white px-4 rounded self-end md:self-auto
                transition-colors duration-500 hover:bg-indigo-800 dark:hover:bg-indigo-300
@@ -154,20 +152,20 @@
                focus:outline-none focus:ring-2 focus:ring-indigo-400">
         Añadir
       </button>
-    
+
     </form>
-    
-    <!-- Barra de búsqueda + selector de orden -->
+
+    <!-- Búsqueda -->
     <div class="mb-4 flex flex-wrap gap-2 items-center">
       <input type="text" id="input-busqueda" placeholder="Buscar tareas..."
         class="h-12 flex-1 min-w-[180px] p-2 border-2 border-gray-400 dark:border-gray-500 rounded bg-white dark:bg-gray-600 text-gray-800 dark:text-white
-               transition-colors duration-500 hover:border-indigo-500 hover:shadow-md
-               focus:outline-none focus:ring-2 focus:ring-indigo-500">
-    
+               transition-colors duration-500 hover:border-indigo-500 dark:hover:border-indigo-300 hover:shadow-md
+               focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-300">
+
       <select id="input-orden"
         class="h-12 w-full md:w-[245px] md:flex-none p-2 border-2 border-gray-400 dark:border-gray-500 rounded bg-white dark:bg-gray-600 text-gray-800 dark:text-white
-              transition-colors duration-500 hover:border-indigo-500 hover:shadow-md
-              focus:outline-none focus:ring-2 focus:ring-indigo-500">
+               transition-colors duration-500 hover:border-indigo-500 dark:hover:border-indigo-300 hover:shadow-md
+               focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-300">
         <option value="creacion" selected>Orden original (creación)</option>
         <option value="prioridad">Prioridad (alta → baja)</option>
         <option value="prioridad-inversa">Prioridad (baja → alta)</option>
@@ -175,7 +173,7 @@
         <option value="estado">Estado (pendientes primero)</option>
       </select>
     </div>
-
+    
     <!-- Encabezado visible solo en escritorio -->
     <div class="hidden md:flex font-semibold text-gray-700 dark:text-gray-200 px-2 mt-4 mb-2">
       <span class="flex-1">Lista de tareas</span>
@@ -183,15 +181,13 @@
       <span class="w-28 text-center">Prioridad</span>
       <span class="w-28 text-center">Acciones</span>
     </div>
-    
-    <!-- Lista donde se insertan las tareas dinámicamente -->
+
     <ul id="lista-tareas" class="transition-colors duration-500"></ul>
 
   </section>
 </main>
 
-<!-- Footer -->
-<footer class="mt-4 mb-2 text-center text-sm text-gray-400 dark:text-gray-500 transition-colors duration-500">
+<footer class="mt-4 mb-2 text-center text-sm text-gray-400 dark:text-gray-200 transition-colors duration-500">
   TaskFlow · 2026
 </footer>
 

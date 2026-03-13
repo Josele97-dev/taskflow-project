@@ -240,7 +240,7 @@ function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
 
     if (fragment.childElementCount === 0) {
         const li = document.createElement('li');
-        li.className = "flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-500";
+        li.className = "flex flex-col items-center justify-center py-12 text-gray-500 dark:text-white";
         li.innerHTML = `
             <span class="text-5xl mb-3">🎉</span>
             <p class="text-lg font-semibold">¡Todo al día!</p>
