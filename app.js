@@ -198,8 +198,15 @@ function crearTareaDOM(tarea) {
     btnEliminar.addEventListener('click', () => {
     li.style.transition = "all 0.3s ease";
     li.style.opacity = "0";
-    li.style.transform = "translateX(60px)";
+li.style.transform = "translateX(60px) scale(0.95)";
+li.style.maxHeight = li.offsetHeight + "px";
 
+setTimeout(() => {
+    li.style.maxHeight = "0";
+    li.style.marginTop = "0";
+    li.style.paddingTop = "0";
+    li.style.paddingBottom = "0";
+}, 50);
     setTimeout(() => {
         const idx = tareas.indexOf(tarea);
         if (idx !== -1) tareas.splice(idx, 1);
