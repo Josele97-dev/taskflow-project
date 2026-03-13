@@ -196,11 +196,17 @@ function crearTareaDOM(tarea) {
     columnaAcciones.appendChild(btnEliminar);
 
     btnEliminar.addEventListener('click', () => {
+    li.style.transition = "all 0.3s ease";
+    li.style.opacity = "0";
+    li.style.transform = "translateX(60px)";
+
+    setTimeout(() => {
         const idx = tareas.indexOf(tarea);
         if (idx !== -1) tareas.splice(idx, 1);
         guardarTareas();
         renderActual();
-    });
+    }, 300);
+});
 
     return li;
 }
