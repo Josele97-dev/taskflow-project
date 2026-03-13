@@ -238,8 +238,20 @@ function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
         fragment.appendChild(crearTareaDOM(tarea));
     }
 
-    listaTareas.appendChild(fragment);
+    if (fragment.childElementCount === 0) {
+        const li = document.createElement('li');
+        li.className = "flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-500";
+        li.innerHTML = `
+            <span class="text-5xl mb-3">🎉</span>
+            <p class="text-lg font-semibold">¡Todo al día!</p>
+            <p class="text-sm mt-1">No hay tareas aquí.</p>
+        `;
+        listaTareas.appendChild(li);
+    } else {
+        listaTareas.appendChild(fragment);
+    }
 }
+
 
 // ------------------------------
 // Cargar tareas
