@@ -24,41 +24,55 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 transition-colors duration-500" style="font-family: 'Inter', sans-serif;">
+<body class="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 text-gray-800 transition-colors duration-500" style="font-family: 'Inter', sans-serif;">
 
 <header class="relative bg-gradient-to-r from-indigo-900 via-indigo-800 to-indigo-700 
                dark:from-gray-800 dark:via-gray-700 dark:to-gray-600
-               text-white py-10 px-4 flex flex-col items-center text-center 
+               text-white py-12 sm:py-14 md:py-16 px-4 flex flex-col items-center text-center 
                shadow-xl rounded-b-3xl transition-all duration-500">
 
   <!-- Contador esquina superior derecha -->
   <p id="contador-pendientes" 
    class="absolute bottom-3 right-3 text-xs font-semibold text-indigo-100 dark:text-gray-300 bg-indigo-800 dark:bg-gray-700 px-2 py-1 rounded-full max-w-[180px] whitespace-nowrap">
-</p>
+  </p>
 
-  <h1 class="text-4xl font-extrabold tracking-wide drop-shadow-lg flex items-center gap-1">
-    <span class="text-4xl">📋</span>
+  <h1 class="font-extrabold tracking-wide drop-shadow-lg flex items-center gap-2
+             text-4xl sm:text-5xl md:text-6xl">
+    <span class="text-4xl sm:text-5xl md:text-6xl">📋</span>
     TaskFlow
   </h1>
 
-  <p class="mt-1 text-indigo-200 dark:text-gray-200 text-sm opacity-90">
+  <p class="mt-4 text-indigo-200 dark:text-gray-200 opacity-90
+            text-sm sm:text-base md:text-lg">
     Ahora puedes organizar tus tareas
   </p>
 
   <!-- Botón modo oscuro -->
   <button id="colorbtn"
-    class="mt-6 relative w-20 h-10 bg-gray-300 dark:bg-gray-500 rounded-full shadow-inner 
+    class="absolute top-4 right-4 
+           w-14 h-7 sm:w-20 sm:h-10
+           bg-gray-300 dark:bg-gray-500 rounded-full shadow-inner 
            flex items-center px-1 transition-all duration-500 hover:scale-110">
 
-    <div class="dot w-8 h-8 bg-white dark:bg-yellow-400 rounded-full shadow-md 
-                transform transition-transform duration-300"></div>
+    <div class="dot 
+                w-5 h-5 sm:w-8 sm:h-8
+                bg-white dark:bg-yellow-400 rounded-full shadow-md 
+                transform transition-transform duration-300
+                dark:translate-x-7 sm:dark:translate-x-10"></div>
 
-    <span class="absolute left-1 text-yellow-400 text-sm dark:text-gray-200">🌞</span>
-    <span class="absolute right-1 text-gray-700 text-sm dark:text-yellow-300">🌙</span>
+    <span class="absolute left-0 
+                 w-7 h-7 sm:w-10 sm:h-10
+                 flex items-center justify-center text-yellow-400 text-xs sm:text-sm dark:text-gray-200">🌞</span>
+
+    <span class="absolute right-0 
+                 w-7 h-7 sm:w-10 sm:h-10
+                 flex items-center justify-center text-gray-700 text-xs sm:text-sm dark:text-yellow-300">🌙</span>
   </button>
+
 </header>
 
-<main class="flex flex-col md:flex-row md:items-start gap-4 p-4 transition-colors duration-500">
+
+<main class="flex-1 flex flex-col md:flex-row md:items-start gap-4 p-4 transition-colors duration-500">
 
   <!-- Categorías -->
   <aside id="aside" class="w-full md:w-64 bg-white dark:bg-gray-700 p-4 rounded-lg shadow transition-colors duration-500">
@@ -168,15 +182,18 @@
                focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-300">
 
       <select id="input-orden"
-        class="h-12 w-full md:w-[245px] md:flex-none p-2 border-2 border-gray-400 dark:border-gray-500 rounded bg-white dark:bg-gray-600 text-gray-800 dark:text-white
+        class="h-12 w-full md:w-[249px] md:flex-none p-2 border-2 border-gray-400 dark:border-gray-500 rounded bg-white dark:bg-gray-600 text-gray-800 dark:text-white
                transition-colors duration-500 hover:border-indigo-500 dark:hover:border-indigo-300 hover:shadow-md
                focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-300">
+        
         <option value="creacion" selected>Orden original (creación)</option>
         <option value="prioridad">Prioridad (alta → baja)</option>
         <option value="prioridad-inversa">Prioridad (baja → alta)</option>
         <option value="texto">Texto (A → Z)</option>
+        <option value="texto-inverso">Texto (Z → A)</option>
         <option value="estado">Estado (pendientes primero)</option>
-      </select>
+</select>
+
     </div>
     
     <!-- Encabezado visible solo en escritorio -->

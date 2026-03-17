@@ -122,15 +122,29 @@ function ordenarTareas(lista) {
     }
     else if (criterioOrdenActual === 'texto') {
         copia.sort((a, b) =>
-            normalizarTexto(a.texto).localeCompare(normalizarTexto(b.texto), 'es', { sensitivity: 'base' })
+            normalizarTexto(a.texto).localeCompare(
+                normalizarTexto(b.texto),
+                'es',
+                { sensitivity: 'base' }
+            )
         );
-    } 
+    }
+    else if (criterioOrdenActual === 'texto-inverso') {
+        copia.sort((a, b) =>
+            normalizarTexto(b.texto).localeCompare(
+                normalizarTexto(a.texto),
+                'es',
+                { sensitivity: 'base' }
+            )
+        );
+    }
     else if (criterioOrdenActual === 'estado') {
         copia.sort((a, b) => (a.completada === b.completada ? 0 : a.completada ? 1 : -1));
     }
 
     return copia;
 }
+
 
 // ------------------------------
 // Crear DOM de tarea
@@ -168,26 +182,37 @@ function crearTareaDOM(tarea) {
     }
 
     const contenedorMeta = document.createElement('div');
-    contenedorMeta.className = "flex items-center flex-wrap gap-2 md:gap-4 md:justify-end w-full md:w-auto";
-    li.appendChild(contenedorMeta);
+contenedorMeta.className = "flex items-center flex-wrap gap-2 md:gap-4 md:justify-end w-full md:w-auto";
+li.appendChild(contenedorMeta);
 
-    const columnaEstado = document.createElement('div');
-    columnaEstado.className = "flex justify-start md:justify-center md:w-24 mb-1 md:mb-0";
-    contenedorMeta.appendChild(columnaEstado);
+// Columna del estado
+const columnaEstado = document.createElement('div');
+columnaEstado.className = "flex justify-start md:justify-center md:w-24 mb-1 md:mb-0";
+contenedorMeta.appendChild(columnaEstado);
 
-    const btnToggleEstado = document.createElement('button');
-    btnToggleEstado.className = `
-        px-3 py-1 rounded-full text-white text-xs font-semibold
-        ${tarea.completada ? "bg-green-600" : "bg-gray-500"}
-    `;
-    btnToggleEstado.textContent = tarea.completada ? "Hecha" : "Pendiente";
-    columnaEstado.appendChild(btnToggleEstado);
+// Botón de estado intuitivo
+const btnToggleEstado = document.createElement('button');
+btnToggleEstado.className = `
+    flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition
+    border border-gray-300 dark:border-gray-500 shadow-sm
+    ${tarea.completada 
+        ? "bg-green-100 text-green-700 hover:bg-green-200" 
+        : "bg-red-100 text-red-700 hover:bg-red-200"}
+`;
 
-    btnToggleEstado.addEventListener('click', () => {
-        tarea.completada = !tarea.completada;
-        guardarTareas();
-        renderActual();
-    });
+btnToggleEstado.innerHTML = tarea.completada
+    ? `<span class="text-base">✔️</span> Hecha`
+    : `<span class="text-base">⭕</span> Pendiente`;
+
+columnaEstado.appendChild(btnToggleEstado);
+
+// Evento para cambiar estado
+btnToggleEstado.addEventListener('click', () => {
+    tarea.completada = !tarea.completada;
+    guardarTareas();
+    renderActual();
+});
+
 
     const columnaPrioridad = document.createElement('div');
     columnaPrioridad.className = "flex justify-start md:justify-center md:w-24 mb-1 md:mb-0";
