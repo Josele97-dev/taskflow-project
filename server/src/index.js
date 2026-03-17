@@ -16,3 +16,17 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en http://localhost:${PORT}`);
 });
+
+app.use((err, req, res, next) => {
+  if (err.message === 'NOT_FOUND') {
+    return res.status(404).json({ message: 'Recurso no encontrado' });
+  }
+
+  if (err.message === 'BAD_REQUEST') {
+    return res.status(400).json({ message: 'Solicitud inválida' });
+  }
+
+  console.error(err);
+
+  return res.status(500).json({ message: 'Error interno del servidor' });
+}); 

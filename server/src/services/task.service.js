@@ -25,8 +25,29 @@ function eliminarTarea(id) {
   tasks.splice(index, 1);
 }
 
+function actualizarTarea(id, data) {
+  const index = tasks.findIndex(t => t.id === id);
+
+  if (index === -1) {
+    throw new Error('NOT_FOUND');
+  }
+
+  const tareaActual = tasks[index];
+
+  const tareaActualizada = {
+    ...tareaActual,
+    ...data
+  };
+
+  tasks[index] = tareaActualizada;
+
+  return tareaActualizada;
+}
+
+
 module.exports = {
   obtenerTodas,
   crearTarea,
-  eliminarTarea
+  eliminarTarea,
+  actualizarTarea
 };
