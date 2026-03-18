@@ -7,8 +7,11 @@ function obtenerTodas() {
 function crearTarea(data) {
   const nuevaTarea = {
     id: Date.now().toString(),
-    title: data.title,
-    completed: false
+    texto: data.texto,
+    prioridad: data.prioridad || 'media',
+    categoria: data.categoria || 'Personal',
+    fecha: data.fecha || null,
+    completada: false
   };
 
   tasks.push(nuevaTarea);
@@ -36,14 +39,17 @@ function actualizarTarea(id, data) {
 
   const tareaActualizada = {
     ...tareaActual,
-    ...data
+    ...(data.texto !== undefined && { texto: data.texto }),
+    ...(data.prioridad !== undefined && { prioridad: data.prioridad }),
+    ...(data.categoria !== undefined && { categoria: data.categoria }),
+    ...(data.fecha !== undefined && { fecha: data.fecha }),
+    ...(data.completada !== undefined && { completada: data.completada }),
   };
 
   tasks[index] = tareaActualizada;
 
   return tareaActualizada;
 }
-
 
 module.exports = {
   obtenerTodas,

@@ -10,16 +10,28 @@ function crearTarea(req, res) {
     return res.status(400).json({ message: 'El body es obligatorio y debe ser JSON' });
   }
 
-  const { title } = req.body;
+  const { texto, prioridad, categoria, fecha } = req.body;
 
-  if (!title || typeof title !== 'string') {
-    return res.status(400).json({ message: 'El título es obligatorio y debe ser un string' });
+  if (!texto || typeof texto !== 'string') {
+    return res.status(400).json({ message: 'El campo texto es obligatorio y debe ser un string' });
   }
 
-  const nuevaTarea = taskService.crearTarea({ title });
+  const prioridadesValidas = ['alta', 'media', 'baja'];
+  if (prioridad !== undefined && !prioridadesValidas.includes(prioridad)) {
+    return res.status(400).json({ message: 'La prioridad debe ser alta, media o baja' });
+  }
+
+  if (categoria !== undefined && typeof categoria !== 'string') {
+    return res.status(400).json({ message: 'La categoría debe ser un string' });
+  }
+
+  if (fecha !== undefined && fecha !== null && isNaN(Date.parse(fecha))) {
+    return res.status(400).json({ message: 'La fecha no tiene un formato válido' });
+  }
+
+  const nuevaTarea = taskService.crearTarea({ texto, prioridad, categoria, fecha });
   res.status(201).json(nuevaTarea);
 }
-
 
 function eliminarTarea(req, res, next) {
   const { id } = req.params;
@@ -38,22 +50,35 @@ function eliminarTarea(req, res, next) {
 
 function actualizarTarea(req, res, next) {
   const { id } = req.params;
-  const { title, completed } = req.body;
+  const { texto, prioridad, categoria, fecha, completada } = req.body;
 
   if (!id) {
     return res.status(400).json({ message: 'El id es obligatorio' });
   }
 
-  if (title !== undefined && typeof title !== 'string') {
-    return res.status(400).json({ message: 'El título debe ser un string' });
+  if (texto !== undefined && typeof texto !== 'string') {
+    return res.status(400).json({ message: 'El campo texto debe ser un string' });
   }
 
-  if (completed !== undefined && typeof completed !== 'boolean') {
-    return res.status(400).json({ message: 'El campo completed debe ser booleano' });
+  const prioridadesValidas = ['alta', 'media', 'baja'];
+  if (prioridad !== undefined && !prioridadesValidas.includes(prioridad)) {
+    return res.status(400).json({ message: 'La prioridad debe ser alta, media o baja' });
+  }
+
+  if (categoria !== undefined && typeof categoria !== 'string') {
+    return res.status(400).json({ message: 'La categoría debe ser un string' });
+  }
+
+  if (fecha !== undefined && fecha !== null && isNaN(Date.parse(fecha))) {
+    return res.status(400).json({ message: 'La fecha no tiene un formato válido' });
+  }
+
+  if (completada !== undefined && typeof completada !== 'boolean') {
+    return res.status(400).json({ message: 'El campo completada debe ser booleano' });
   }
 
   try {
-    const tareaActualizada = taskService.actualizarTarea(id, { title, completed });
+    const tareaActualizada = taskService.actualizarTarea(id, { texto, prioridad, categoria, fecha, completada });
     return res.status(200).json(tareaActualizada);
   } catch (error) {
     return next(error);
