@@ -4,7 +4,6 @@ const { PORT } = require('./config/env');
 const taskRoutes = require('./routes/task.routes');
 const categoryRoutes = require('./routes/category.routes');
 
-
 const app = express();
 
 app.use(cors());
@@ -15,14 +14,6 @@ app.use('/api/v1/categories', categoryRoutes);
 app.get('/', (req, res) => {
   res.send('Servidor funcionando correctamente');
 });
-
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Servidor escuchando en http://localhost:${PORT}`);
-  });
-}
-
-module.exports = app;
 
 app.use((err, req, res, next) => {
   if (err.message === 'NOT_FOUND') {
@@ -36,4 +27,12 @@ app.use((err, req, res, next) => {
   console.error(err);
 
   return res.status(500).json({ message: 'Error interno del servidor' });
-}); 
+});
+
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Servidor escuchando en http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;

@@ -1,4 +1,4 @@
-const BACKEND_URL = 'https://taskflow-project-ljs4.vercel.app';
+const BACKEND_URL = '';
 const BASE_URL = `${BACKEND_URL}/api/v1/tasks`;
 const BASE_URL_CATEGORIES = `${BACKEND_URL}/api/v1/categories`;
 
