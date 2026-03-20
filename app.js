@@ -1,3 +1,4 @@
+import { obtenerTareas, crearTarea, actualizarTarea, eliminarTarea, obtenerCategorias, crearCategoria, eliminarCategoria } from './src/api/client.js';
 // DOM
 const formTareas = document.getElementById('formulario-tareas');
 const inputTarea = document.getElementById('input-tarea');
@@ -19,39 +20,7 @@ const categoriasBase = ["Todas", "Trabajo", "Estudios", "Personal"];
 
 // Estado
 let tareas = [];
-let categoriasUsuario = [];
 let criterioOrdenActual = 'creacion';
-
-// ------------------------------
-// Persistencia
-// ------------------------------
-
-/**
- * Guarda la lista de tareas en localStorage.
- * @param {Array} nextTareas - Lista de tareas a guardar.
- */
-function guardarTareas(nextTareas = tareas) {
-    localStorage.setItem('tareas', JSON.stringify(nextTareas));
-}
-
-/**
- * Guarda las categorías creadas por el usuario en localStorage.
- */
-function guardarCategorias() {
-    localStorage.setItem('categoriasUsuario', JSON.stringify(categoriasUsuario));
-}
-
-/**
- * Carga las categorías del usuario desde localStorage.
- */
-function cargarCategorias() {
-    const raw = localStorage.getItem('categoriasUsuario');
-    try {
-        categoriasUsuario = raw ? JSON.parse(raw) : [];
-    } catch {
-        categoriasUsuario = [];
-    }
-}
 
 // ------------------------------
 // Utilidades
@@ -207,10 +176,9 @@ btnToggleEstado.innerHTML = tarea.completada
 columnaEstado.appendChild(btnToggleEstado);
 
 // Evento para cambiar estado
-btnToggleEstado.addEventListener('click', () => {
-    tarea.completada = !tarea.completada;
-    guardarTareas();
-    renderActual();
+btnToggleEstado.addEventListener('click', async () => {
+    await actualizarTarea(tarea.id, { completada: !tarea.completada });
+    await cargarTareas();
 });
 
 
@@ -237,23 +205,22 @@ btnToggleEstado.addEventListener('click', () => {
     btnEliminar.className = "cursor-pointer text-sm text-red-600 hover:text-red-800 transition-colors";
     columnaAcciones.appendChild(btnEliminar);
 
-    btnEliminar.addEventListener('click', () => {
+    btnEliminar.addEventListener('click', async () => {
     li.style.transition = "all 0.3s ease";
     li.style.opacity = "0";
-li.style.transform = "translateX(60px) scale(0.95)";
-li.style.maxHeight = li.offsetHeight + "px";
+    li.style.transform = "translateX(60px) scale(0.95)";
+    li.style.maxHeight = li.offsetHeight + "px";
 
-setTimeout(() => {
-    li.style.maxHeight = "0";
-    li.style.marginTop = "0";
-    li.style.paddingTop = "0";
-    li.style.paddingBottom = "0";
-}, 50);
     setTimeout(() => {
-        const idx = tareas.indexOf(tarea);
-        if (idx !== -1) tareas.splice(idx, 1);
-        guardarTareas();
-        renderActual();
+        li.style.maxHeight = "0";
+        li.style.marginTop = "0";
+        li.style.paddingTop = "0";
+        li.style.paddingBottom = "0";
+    }, 50);
+
+    setTimeout(async () => {
+        await eliminarTarea(tarea.id);
+        await cargarTareas();
     }, 300);
 });
 
@@ -313,26 +280,10 @@ function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
 // ------------------------------
 
 /**
- * Carga las tareas desde localStorage y las prepara para su uso.
+ * Carga las tareas desde la API y actualiza el estado.
  */
-function cargarTareas() {
-    const raw = localStorage.getItem('tareas');
-    let parsed = [];
-
-    try {
-        parsed = raw ? JSON.parse(raw) : [];
-    } catch {
-        parsed = [];
-    }
-
-    tareas = Array.isArray(parsed)
-        ? parsed.map(t => ({
-            ...t,
-            completada: typeof t.completada === 'boolean' ? t.completada : false,
-            fecha: t.fecha || null,
-        }))
-        : [];
-
+async function cargarTareas() {
+    tareas = await obtenerTareas();
     renderActual();
 }
 
@@ -344,7 +295,7 @@ function cargarTareas() {
  * Añade una nueva tarea a la lista y la guarda.
  * @param {Event} e - Evento del formulario.
  */
-function agregarTarea(e) {
+async function agregarTarea(e) {
     e.preventDefault();
 
     const texto = inputTarea.value.trim();
@@ -357,9 +308,8 @@ function agregarTarea(e) {
     const ultimaCategoria = categoria;
     const ultimaPrioridad = prioridad;
 
-    tareas.push({ texto, prioridad, categoria, fecha, completada: false });
-    guardarTareas();
-    renderActual();
+    await crearTarea({ texto, prioridad, categoria, fecha });
+    await cargarTareas();
 
     formTareas.reset();
 
@@ -401,7 +351,7 @@ function crearCategoriaDOM(nombre) {
         `;
         btnEliminar.addEventListener('click', (e) => {
             e.stopPropagation();
-            eliminarCategoria(nombre, li);
+            eliminarCategoriaLocal(nombre, li);
         });
         li.appendChild(btnEliminar);
     }
@@ -427,18 +377,20 @@ function agregarCategoriaAlSelect(nombre) {
  * @param {string} nombre - Nombre de la categoría.
  * @param {HTMLElement} li - Elemento HTML de la categoría.
  */
-function eliminarCategoria(nombre, li) {
-    li.remove();
+async function eliminarCategoriaLocal(nombre, li) {
+    try {
+        await eliminarCategoria(nombre);
+        li.remove();
 
-    const option = selectCategoria.querySelector(`option[value="${nombre}"]`);
-    if (option) option.remove();
+        const option = selectCategoria.querySelector(`option[value="${nombre}"]`);
+        if (option) option.remove();
 
-    categoriasUsuario = categoriasUsuario.filter(c => c !== nombre);
-    guardarCategorias();
-
-    if (getCategoriaActiva() === nombre) {
-        const todas = listaCategorias.querySelector('li[data-category="Todas"]');
-        seleccionarCategoria(todas);
+        if (getCategoriaActiva() === nombre) {
+            const todas = listaCategorias.querySelector('li[data-category="Todas"]');
+            seleccionarCategoria(todas);
+        }
+    } catch (error) {
+        console.error('Error al eliminar la categoría:', error);
     }
 }
 
@@ -465,21 +417,19 @@ function seleccionarCategoria(li) {
 /**
  * Crea una nueva categoría personalizada.
  */
-function agregarCategoria() {
+async function agregarCategoria() {
     const nombre = inputNuevaCategoria.value.trim();
     if (nombre === '') return;
 
-    if (categoriasBase.includes(nombre) || categoriasUsuario.includes(nombre)) return;
-
-    categoriasUsuario.push(nombre);
-    guardarCategorias();
-
-    const li = crearCategoriaDOM(nombre);
-    listaCategorias.appendChild(li);
-
-    agregarCategoriaAlSelect(nombre);
-
-    inputNuevaCategoria.value = '';
+    try {
+        await crearCategoria(nombre);
+        const li = crearCategoriaDOM(nombre);
+        listaCategorias.appendChild(li);
+        agregarCategoriaAlSelect(nombre);
+        inputNuevaCategoria.value = '';
+    } catch (error) {
+        console.error('Error al crear la categoría:', error);
+    }
 }
 
 // ------------------------------
@@ -489,7 +439,7 @@ function agregarCategoria() {
 /**
  * Inicializa la aplicación: eventos, carga de datos y renderizado inicial.
  */
-function initApp() {
+async function initApp() {
 
     // Fecha mínima = hoy
     const hoy = new Date().toISOString().split("T")[0];
@@ -522,13 +472,12 @@ function initApp() {
         }
     });
 
-    cargarCategorias();
-
-    categoriasUsuario.forEach(nombre => {
-        const li = crearCategoriaDOM(nombre);
-        listaCategorias.appendChild(li);
-        agregarCategoriaAlSelect(nombre);
-    });
+    const categoriasGuardadas = await obtenerCategorias();
+    categoriasGuardadas.forEach(nombre => {
+    const li = crearCategoriaDOM(nombre);
+    listaCategorias.appendChild(li);
+    agregarCategoriaAlSelect(nombre);
+});
 
     const categoriaTodas = listaCategorias.querySelector('li[data-category="Todas"]');
     if (categoriaTodas) seleccionarCategoria(categoriaTodas);

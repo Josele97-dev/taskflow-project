@@ -2,20 +2,27 @@ const express = require('express');
 const cors = require('cors');
 const { PORT } = require('./config/env');
 const taskRoutes = require('./routes/task.routes');
+const categoryRoutes = require('./routes/category.routes');
+
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use('/api/v1/tasks', taskRoutes);
+app.use('/api/v1/categories', categoryRoutes);
 
 app.get('/', (req, res) => {
   res.send('Servidor funcionando correctamente');
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor escuchando en http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Servidor escuchando en http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
 
 app.use((err, req, res, next) => {
   if (err.message === 'NOT_FOUND') {
