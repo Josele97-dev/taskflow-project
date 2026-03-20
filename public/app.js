@@ -1,4 +1,5 @@
 import { obtenerTareas, crearTarea, actualizarTarea, eliminarTarea, obtenerCategorias, crearCategoria, eliminarCategoria } from './src/api/client.js';
+
 // DOM
 const formTareas = document.getElementById('formulario-tareas');
 const inputTarea = document.getElementById('input-tarea');
