@@ -1,4 +1,6 @@
-const BASE_URL = 'http://localhost:3000/api/v1/tasks';
+const BACKEND_URL = 'https://taskflow-project-ljs4.vercel.app';
+const BASE_URL = `${BACKEND_URL}/api/v1/tasks`;
+const BASE_URL_CATEGORIES = `${BACKEND_URL}/api/v1/categories`;
 
 async function obtenerTareas() {
   const response = await fetch(BASE_URL);
@@ -30,11 +32,9 @@ async function eliminarTarea(id) {
   const response = await fetch(`${BASE_URL}/${id}`, {
     method: 'DELETE'
   });
+  
   if (!response.ok) throw new Error('Error al eliminar la tarea');
 }
-
-const BASE_URL_CATEGORIES = 'http://localhost:3000/api/v1/categories';
-
 async function obtenerCategorias() {
   const response = await fetch(BASE_URL_CATEGORIES);
   if (!response.ok) throw new Error('Error al obtener las categorías');
