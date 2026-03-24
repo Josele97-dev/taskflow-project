@@ -1,0 +1,160 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "TaskFlow API",
+    "version": "1.0.0",
+    "description": "API REST para gestionar tareas y categorías"
+  },
+  "paths": {
+    "/categories": {
+      "get": {
+        "summary": "Obtener todas las categorías",
+        "responses": {
+          "200": {
+            "description": "Lista de categorías"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear una nueva categoría",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nombre": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Categoría creada correctamente"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          }
+        }
+      }
+    },
+    "/categories/{nombre}": {
+      "delete": {
+        "summary": "Eliminar una categoría",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nombre",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Categoría eliminada correctamente"
+          },
+          "404": {
+            "description": "Categoría no encontrada"
+          }
+        }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "summary": "Obtener todas las tareas",
+        "responses": {
+          "200": {
+            "description": "Lista de tareas"
+          }
+        }
+      },
+      "post": {
+        "summary": "Crear una nueva tarea",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "texto": {
+                    "type": "string"
+                  },
+                  "prioridad": {
+                    "type": "string"
+                  },
+                  "categoria": {
+                    "type": "string"
+                  },
+                  "fecha": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tarea creada correctamente"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "put": {
+        "summary": "Actualizar una tarea",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tarea actualizada correctamente"
+          },
+          "404": {
+            "description": "Tarea no encontrada"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Eliminar una tarea",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Tarea eliminada correctamente"
+          },
+          "404": {
+            "description": "Tarea no encontrada"
+          }
+        }
+      }
+    }
+  },
+  "components": {},
+  "tags": []
+}
