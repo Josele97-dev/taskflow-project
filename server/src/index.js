@@ -15,8 +15,17 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Ruta de Swagger (debe estar dentro de /api/v1 para que Vercel la envíe al backend)
-app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use(
+  '/api/v1/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument, {
+    customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.min.css',
+    customJs: [
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-bundle.min.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.min.js'
+    ]
+  })
+);
 
 // Exponer el JSON para verificar que existe en producción
 app.get('/api/v1/swagger.json', (req, res) => {
