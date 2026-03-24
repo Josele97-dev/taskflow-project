@@ -3,8 +3,9 @@ const categoriasBase = ["Todas", "Trabajo", "Estudios", "Personal"];
 let categoriasUsuario = [];
 
 function obtenerTodas() {
-  return categoriasUsuario;
+  return [...categoriasBase, ...categoriasUsuario];
 }
+
 
 function crearCategoria(nombre) {
   if (categoriasBase.includes(nombre) || categoriasUsuario.includes(nombre)) {
@@ -12,7 +13,7 @@ function crearCategoria(nombre) {
   }
 
   categoriasUsuario.push(nombre);
-  return nombre;
+  return { nombre }
 }
 
 function eliminarCategoria(nombre) {

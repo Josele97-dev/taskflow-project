@@ -129,7 +129,7 @@ https://taskflow-project-eight.vercel.app/api/v1
 | `404 Not Found` | Tarea o categoría no encontrada |
 | `500 Internal Server Error` | Error interno no controlado |
 
-La documentación interactiva completa de la API está disponible en [`/api-docs`](https://taskflow-project-eight.vercel.app/api-docs), generada automáticamente con Swagger a partir de las anotaciones JSDoc en los ficheros de rutas.
+La documentación interactiva de la API está disponible en [`/api-docs`](https://taskflow-project-eight.vercel.app/api-docs), generada automáticamente con Swagger a partir de las anotaciones JSDoc en los ficheros de rutas.
 
 ---
 

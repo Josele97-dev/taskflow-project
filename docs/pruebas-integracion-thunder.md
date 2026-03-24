@@ -13,7 +13,7 @@ correctos y errores intencionados (400, 404, 500).
 - URL base: [`https://taskflow-project-eight.vercel.app`](https://taskflow-project-eight.vercel.app)
 - Ruta principal de la API: `/api/v1/tasks`
 
-## 3. Pruebas de casos correctos
+## 3. Pruebas de casos correctos con tareas
 
 ### 3.1. POST - Crear tarea
 
@@ -97,7 +97,7 @@ correctos y errores intencionados (400, 404, 500).
 **Resultado obtenido:**
 - Código: `204 No Content`
 
-## 4. Pruebas con errores intencionados
+## 4. Pruebas con errores intencionados con tareas
 
 ### 4.1 POST sin body
 
@@ -140,3 +140,67 @@ correctos y errores intencionados (400, 404, 500).
     "message": "Tarea no encontrada"
 }
 ```
+## 5. Pruebas de casos correctos con categorías
+
+### 5.1. POST – Crear categoría
+
+- Método: POST
+- URL: https://taskflow-project-eight.vercel.app/api/v1/categories
+
+**Resultado esperado:**
+
+- Código: 201 CREATED
+- Cuerpo: Categoría creada
+
+**Resultado obtenido:**
+
+- Código: `201 CREATED`
+- Cuerpo:
+
+```json
+
+    {
+        "nombre": "Compras"
+    }
+
+```
+
+### 5.2. GET – Obtener todas las categorías
+
+- Método: GET
+- URL: https://taskflow-project-eight.vercel.app/api/v1/categories
+
+**Resultado esperado:**
+
+- Código: 200 OK
+- Cuerpo: lista de categorías (base + creadas por el usuario)
+
+**Resultado obtenido:**
+
+- Código: `200 OK`
+- Cuerpo:
+
+```json
+[
+    "Todas",
+    "Trabajo",
+    "Estudios",
+    "Personal",
+    "Compras"
+]
+```
+
+### 5.3. DELETE – Eliminar categoría
+
+- Método: DELETE
+- URL: https://taskflow-project-eight.vercel.app/api/v1/categories/Compras
+
+**Resultado esperado:**
+
+- Código: 204 No Content
+- Cuerpo: (Vacío)
+
+**Resultado obtenido:**
+
+- Código: `204 No Content`
+- Cuerpo: (Vacío)
