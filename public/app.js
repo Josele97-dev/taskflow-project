@@ -174,9 +174,13 @@ function ordenarTareas(lista) {
     else if (criterioOrdenActual === 'estado') {
         copia.sort((a, b) => (a.completada === b.completada ? 0 : a.completada ? 1 : -1));
     }
+    else if (criterioOrdenActual === 'hechas') {
+        copia.sort((a, b) => (a.completada === b.completada ? 0 : a.completada ? -1 : 1));
+    }
 
     return copia;
 }
+
 
 
 // ------------------------------
