@@ -52,6 +52,28 @@ function mostrarToast(mensaje) {
     }, 3000);
 }
 
+function mostrarToastError(mensaje) {
+    const contenedor = document.getElementById('toast-contenedor') ?? crearContenedorToast();
+
+    const toast = document.createElement('div');
+    toast.className = `
+        flex items-center gap-2 px-4 py-3 rounded-lg shadow-md text-sm font-medium
+        bg-red-100 text-red-800 border border-red-300
+        transition-all duration-300 opacity-0 translate-y-2
+    `;
+    toast.innerHTML = `<span class="text-base">❌</span> ${mensaje}`;
+    contenedor.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.classList.remove('opacity-0', 'translate-y-2');
+    });
+
+    setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 /**
  * Crea el contenedor de toasts si no existe.
  * @returns {HTMLElement} Contenedor de toasts.
@@ -495,7 +517,7 @@ async function agregarCategoria() {
         inputNuevaCategoria.value = '';
         mostrarToast('Categoría creada correctamente');
     } catch (error) {
-    mostrarToast(`❌ ${error.message}`);
+    mostrarToastError(error.message);
 }
 }
 
