@@ -5,7 +5,7 @@ function obtenerTodas(req, res) {
   res.json(categorias);
 }
 
-function crearCategoria(req, res) {
+function crearCategoria(req, res, next) {
   if (!req.body || typeof req.body !== 'object') {
     return res.status(400).json({ message: 'El body es obligatorio y debe ser JSON' });
   }
@@ -40,6 +40,9 @@ function eliminarCategoria(req, res, next) {
   } catch (error) {
     if (error.message === 'BASE_CATEGORY') {
       return res.status(400).json({ message: 'No se pueden eliminar las categorías base' });
+    }
+    if (error.message === 'NOT_FOUND') {
+      return res.status(404).json({ message: 'Categoría no encontrada' });
     }
     return next(error);
   }

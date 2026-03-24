@@ -23,6 +23,48 @@ let tareas = [];
 let criterioOrdenActual = 'creacion';
 
 // ------------------------------
+// Toast
+// ------------------------------
+
+/**
+ * Muestra un toast de éxito que desaparece automáticamente.
+ * @param {string} mensaje - Texto a mostrar.
+ */
+function mostrarToast(mensaje) {
+    const contenedor = document.getElementById('toast-contenedor') ?? crearContenedorToast();
+
+    const toast = document.createElement('div');
+    toast.className = `
+        flex items-center gap-2 px-4 py-3 rounded-lg shadow-md text-sm font-medium
+        bg-green-100 text-green-800 border border-green-300
+        transition-all duration-300 opacity-0 translate-y-2
+    `;
+    toast.innerHTML = `<span class="text-base">✅</span> ${mensaje}`;
+    contenedor.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.classList.remove('opacity-0', 'translate-y-2');
+    });
+
+    setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+/**
+ * Crea el contenedor de toasts si no existe.
+ * @returns {HTMLElement} Contenedor de toasts.
+ */
+function crearContenedorToast() {
+    const div = document.createElement('div');
+    div.id = 'toast-contenedor';
+    div.className = 'fixed bottom-6 right-6 flex flex-col gap-2 z-50';
+    document.body.appendChild(div);
+    return div;
+}
+
+// ------------------------------
 // Utilidades
 // ------------------------------
 
@@ -151,36 +193,32 @@ function crearTareaDOM(tarea) {
     }
 
     const contenedorMeta = document.createElement('div');
-contenedorMeta.className = "flex items-center flex-wrap gap-2 md:gap-4 md:justify-end w-full md:w-auto";
-li.appendChild(contenedorMeta);
+    contenedorMeta.className = "flex items-center flex-wrap gap-2 md:gap-4 md:justify-end w-full md:w-auto";
+    li.appendChild(contenedorMeta);
 
-// Columna del estado
-const columnaEstado = document.createElement('div');
-columnaEstado.className = "flex justify-start md:justify-center md:w-24 mb-1 md:mb-0";
-contenedorMeta.appendChild(columnaEstado);
+    const columnaEstado = document.createElement('div');
+    columnaEstado.className = "flex justify-start md:justify-center md:w-24 mb-1 md:mb-0";
+    contenedorMeta.appendChild(columnaEstado);
 
-// Botón de estado intuitivo
-const btnToggleEstado = document.createElement('button');
-btnToggleEstado.className = `
-    flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition
-    border border-gray-300 dark:border-gray-500 shadow-sm
-    ${tarea.completada 
-        ? "bg-green-100 text-green-700 hover:bg-green-200" 
-        : "bg-red-100 text-red-700 hover:bg-red-200"}
-`;
+    const btnToggleEstado = document.createElement('button');
+    btnToggleEstado.className = `
+        flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold cursor-pointer transition
+        border border-gray-300 dark:border-gray-500 shadow-sm
+        ${tarea.completada 
+            ? "bg-green-100 text-green-700 hover:bg-green-200" 
+            : "bg-red-100 text-red-700 hover:bg-red-200"}
+    `;
 
-btnToggleEstado.innerHTML = tarea.completada
-    ? `<span class="text-base">✔️</span> Hecha`
-    : `<span class="text-base">⭕</span> Pendiente`;
+    btnToggleEstado.innerHTML = tarea.completada
+        ? `<span class="text-base">✔️</span> Hecha`
+        : `<span class="text-base">⭕</span> Pendiente`;
 
-columnaEstado.appendChild(btnToggleEstado);
+    columnaEstado.appendChild(btnToggleEstado);
 
-// Evento para cambiar estado
-btnToggleEstado.addEventListener('click', async () => {
-    await actualizarTarea(tarea.id, { completada: !tarea.completada });
-    await cargarTareas();
-});
-
+    btnToggleEstado.addEventListener('click', async () => {
+        await actualizarTarea(tarea.id, { completada: !tarea.completada });
+        await cargarTareas();
+    });
 
     const columnaPrioridad = document.createElement('div');
     columnaPrioridad.className = "flex justify-start md:justify-center md:w-24 mb-1 md:mb-0";
@@ -206,23 +244,24 @@ btnToggleEstado.addEventListener('click', async () => {
     columnaAcciones.appendChild(btnEliminar);
 
     btnEliminar.addEventListener('click', async () => {
-    li.style.transition = "all 0.3s ease";
-    li.style.opacity = "0";
-    li.style.transform = "translateX(60px) scale(0.95)";
-    li.style.maxHeight = li.offsetHeight + "px";
+        li.style.transition = "all 0.3s ease";
+        li.style.opacity = "0";
+        li.style.transform = "translateX(60px) scale(0.95)";
+        li.style.maxHeight = li.offsetHeight + "px";
 
-    setTimeout(() => {
-        li.style.maxHeight = "0";
-        li.style.marginTop = "0";
-        li.style.paddingTop = "0";
-        li.style.paddingBottom = "0";
-    }, 50);
+        setTimeout(() => {
+            li.style.maxHeight = "0";
+            li.style.marginTop = "0";
+            li.style.paddingTop = "0";
+            li.style.paddingBottom = "0";
+        }, 50);
 
-    setTimeout(async () => {
-        await eliminarTarea(tarea.id);
-        await cargarTareas();
-    }, 300);
-});
+        setTimeout(async () => {
+            await eliminarTarea(tarea.id);
+            mostrarToast('Tarea eliminada correctamente');
+            await cargarTareas();
+        }, 300);
+    });
 
     return li;
 }
@@ -283,8 +322,25 @@ function mostrarTareas(filtro = 'Todas', textoBusqueda = '') {
  * Carga las tareas desde la API y actualiza el estado.
  */
 async function cargarTareas() {
-    tareas = await obtenerTareas();
-    renderActual();
+    listaTareas.innerHTML = `
+        <li class="flex justify-center items-center py-12 text-gray-500 dark:text-white">
+            <span class="animate-spin text-3xl mr-3">⏳</span>
+            <span>Cargando tareas...</span>
+        </li>
+    `;
+
+    try {
+        tareas = await obtenerTareas();
+        renderActual();
+    } catch (error) {
+        listaTareas.innerHTML = `
+            <li class="flex flex-col items-center justify-center py-12 text-red-500">
+                <span class="text-5xl mb-3">❌</span>
+                <p class="text-lg font-semibold">Error al cargar las tareas</p>
+                <p class="text-sm mt-1">El servidor no está disponible. Inténtalo de nuevo.</p>
+            </li>
+        `;
+    }
 }
 
 // ------------------------------
@@ -308,13 +364,22 @@ async function agregarTarea(e) {
     const ultimaCategoria = categoria;
     const ultimaPrioridad = prioridad;
 
-    await crearTarea({ texto, prioridad, categoria, fecha });
-    await cargarTareas();
+    try {
+        await crearTarea({ texto, prioridad, categoria, fecha });
+        mostrarToast('Tarea creada correctamente');
+        await cargarTareas();
 
-    formTareas.reset();
-
-    selectCategoria.value = ultimaCategoria;
-    selectPrioridad.value = ultimaPrioridad;
+        formTareas.reset();
+        selectCategoria.value = ultimaCategoria;
+        selectPrioridad.value = ultimaPrioridad;
+    } catch (error) {
+        const mensaje = document.getElementById('mensaje-error-tarea');
+        if (mensaje) {
+            mensaje.textContent = '❌ Error al crear la tarea. Inténtalo de nuevo.';
+            mensaje.classList.remove('hidden');
+            setTimeout(() => mensaje.classList.add('hidden'), 3000);
+        }
+    }
 }
 
 // ------------------------------
@@ -330,7 +395,6 @@ function crearCategoriaDOM(nombre) {
     const li = document.createElement('li');
     li.dataset.category = nombre;
 
-    // Fondo de no seleccionada igual que categorías base
     li.className = `
         relative
         px-2 py-1 rounded w-full text-center
@@ -389,6 +453,8 @@ async function eliminarCategoriaLocal(nombre, li) {
             const todas = listaCategorias.querySelector('li[data-category="Todas"]');
             seleccionarCategoria(todas);
         }
+
+        mostrarToast('Categoría eliminada correctamente');
     } catch (error) {
         console.error('Error al eliminar la categoría:', error);
     }
@@ -427,6 +493,7 @@ async function agregarCategoria() {
         listaCategorias.appendChild(li);
         agregarCategoriaAlSelect(nombre);
         inputNuevaCategoria.value = '';
+        mostrarToast('Categoría creada correctamente');
     } catch (error) {
         console.error('Error al crear la categoría:', error);
     }
@@ -474,10 +541,10 @@ async function initApp() {
 
     const categoriasGuardadas = await obtenerCategorias();
     categoriasGuardadas.forEach(nombre => {
-    const li = crearCategoriaDOM(nombre);
-    listaCategorias.appendChild(li);
-    agregarCategoriaAlSelect(nombre);
-});
+        const li = crearCategoriaDOM(nombre);
+        listaCategorias.appendChild(li);
+        agregarCategoriaAlSelect(nombre);
+    });
 
     const categoriaTodas = listaCategorias.querySelector('li[data-category="Todas"]');
     if (categoriaTodas) seleccionarCategoria(categoriaTodas);
