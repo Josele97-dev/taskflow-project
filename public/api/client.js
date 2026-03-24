@@ -47,8 +47,14 @@ async function crearCategoria(nombre) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ nombre })
   });
-  if (!response.ok) throw new Error('Error al crear la categoría');
-  return response.json();
+const data = await response.json();
+
+if (!response.ok) {
+  throw new Error(data.message);
+}
+
+return data;
+
 }
 
 async function eliminarCategoria(nombre) {

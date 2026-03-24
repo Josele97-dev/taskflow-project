@@ -495,8 +495,8 @@ async function agregarCategoria() {
         inputNuevaCategoria.value = '';
         mostrarToast('Categoría creada correctamente');
     } catch (error) {
-        console.error('Error al crear la categoría:', error);
-    }
+    mostrarToast(`❌ ${error.message}`);
+}
 }
 
 // ------------------------------
