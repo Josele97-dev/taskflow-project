@@ -452,11 +452,14 @@ function crearCategoriaDOM(nombre) {
  * @param {string} nombre - Nombre de la categoría.
  */
 function agregarCategoriaAlSelect(nombre) {
+    if (nombre === "Todas") return; 
+
     const option = document.createElement('option');
     option.value = nombre;
     option.textContent = nombre;
     selectCategoria.appendChild(option);
 }
+
 
 /**
  * Elimina una categoría creada por el usuario.
