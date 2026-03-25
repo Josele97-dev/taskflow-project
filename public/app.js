@@ -568,11 +568,20 @@ async function initApp() {
         }
     });
 
+    
+    listaCategorias.innerHTML = `
+    <li class="flex justify-center items-center py-3 text-gray-500 dark:text-white">
+        <span class="animate-spin text-xl mr-2">⏳</span>
+        <span>Cargando categorías...</span>
+    </li>
+    `;
+
     const categoriasGuardadas = await obtenerCategorias();
+    listaCategorias.innerHTML = '';
     categoriasGuardadas.forEach(nombre => {
-        const li = crearCategoriaDOM(nombre);
-        listaCategorias.appendChild(li);
-        agregarCategoriaAlSelect(nombre);
+    const li = crearCategoriaDOM(nombre);
+    listaCategorias.appendChild(li);
+    agregarCategoriaAlSelect(nombre);
     });
 
     const categoriaTodas = listaCategorias.querySelector('li[data-category="Todas"]');
