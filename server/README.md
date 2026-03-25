@@ -4,7 +4,7 @@ Servidor REST desarrollado con Node.js y Express. Gestiona tareas y categorías 
 
 ---
 
-## 📑 Índice
+## Índice
 
 1. [Estructura del directorio](#estructura-del-directorio)
 2. [Arquitectura](#arquitectura)
@@ -22,13 +22,14 @@ Servidor REST desarrollado con Node.js y Express. Gestiona tareas y categorías 
 8. [API REST](#api-rest)
    - [Tareas](#tareas)
    - [Categorías](#categorías)
-9. [Ejemplos de peticiones reales (curl)](#-ejemplos-de-peticiones-reales-curl)
-   - [Obtener todas las tareas](#-obtener-todas-las-tareas)
-   - [Categorías](#-categorías)
+9. [Ejemplos de peticiones reales (curl)](#ejemplos-de-peticiones-reales-curl)
+   - [Obtener todas las tareas](#obtener-todas-las-tareas)
+   - [Categorías](#categorías-1)
 10. [Ejemplos de implementación](#ejemplos-de-implementación)
 11. [Códigos de error](#códigos-de-error)
 12. [Stack y dependencias](#stack-y-dependencias)
 13. [Despliegue](#despliegue)
+
 
 ---
 
@@ -199,7 +200,7 @@ https://taskflow-project-eight.vercel.app/api/v1
 
 ---
 
-# 🧪 Ejemplos de peticiones reales (curl)
+# Ejemplos de peticiones reales (curl)
 
 Todas las peticiones usan la URL base:
 
@@ -209,7 +210,7 @@ https://taskflow-project-eight.vercel.app/api/v1
 
 ---
 
-## 📌 Obtener todas las tareas
+## Obtener todas las tareas
 
 ```bash
 curl https://taskflow-project-eight.vercel.app/api/v1/tasks
@@ -217,7 +218,7 @@ curl https://taskflow-project-eight.vercel.app/api/v1/tasks
 
 ---
 
-## ➕ Crear una tarea
+## Crear una tarea
 
 ```bash
 curl -X POST https://taskflow-project-eight.vercel.app/api/v1/tasks \
@@ -227,7 +228,7 @@ curl -X POST https://taskflow-project-eight.vercel.app/api/v1/tasks \
 
 ---
 
-## ❌ Crear una tarea sin texto
+## Crear una tarea sin texto
 
 ```bash
 curl -X POST https://taskflow-project-eight.vercel.app/api/v1/tasks \
@@ -237,7 +238,7 @@ curl -X POST https://taskflow-project-eight.vercel.app/api/v1/tasks \
 
 ---
 
-## ✏️ Actualizar una tarea
+## Actualizar una tarea
 
 ```bash
 curl -X PUT https://taskflow-project-eight.vercel.app/api/v1/tasks/1732539000000 \
@@ -247,7 +248,7 @@ curl -X PUT https://taskflow-project-eight.vercel.app/api/v1/tasks/1732539000000
 
 ---
 
-## 🗑 Eliminar una tarea
+## Eliminar una tarea
 
 ```bash
 curl -X DELETE https://taskflow-project-eight.vercel.app/api/v1/tasks/1732539000000
@@ -255,7 +256,7 @@ curl -X DELETE https://taskflow-project-eight.vercel.app/api/v1/tasks/1732539000
 
 ---
 
-## 📁 Categorías
+## Categorías
 
 ### Obtener todas las categorías
 
@@ -376,7 +377,7 @@ function crearTarea(data) {
 
 ---
 
-### Códigos de error
+### 🚦 Códigos de error
 
 | Código | Causa |
 |--------|-------|
