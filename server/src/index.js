@@ -4,12 +4,8 @@ const path = require('path');
 const { PORT } = require('./config/env');
 const taskRoutes = require('./routes/task.routes');
 const categoryRoutes = require('./routes/category.routes');
-
 const swaggerUi = require('swagger-ui-express');
-
-// Cargar el swagger.json estático
 const swaggerDocument = require('../swagger.json');
-
 const app = express();
 
 app.use(cors());
@@ -27,7 +23,6 @@ app.use(
   })
 );
 
-// Exponer el JSON para verificar que existe en producción
 app.get('/api/v1/swagger.json', (req, res) => {
   res.sendFile(path.join(__dirname, '../swagger.json'));
 });
