@@ -34,7 +34,7 @@ function crearTarea(req, res, next) {
     return res.status(201).json(nuevaTarea);
   } catch (error) {
     if (error.message === 'ALREADY_EXISTS') {
-      return res.status(400).json({ message: 'Ya existe una tarea con el mismo título, categoría y prioridad' });
+      return res.status(400).json({ message: 'Ya existe una tarea con el mismo título, prioridad y categoría' });
     }
     return next(error);
   }
