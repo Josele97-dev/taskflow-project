@@ -14,8 +14,9 @@ async function crearTarea(tarea) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(tarea)
   });
-  if (!response.ok) throw new Error('Error al crear la tarea');
-  return response.json();
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message);
+  return data;
 }
 
 async function actualizarTarea(id, datos) {

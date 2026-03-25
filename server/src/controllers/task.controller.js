@@ -5,7 +5,7 @@ function obtenerTodas(req, res) {
   res.json(tasks);
 }
 
-function crearTarea(req, res) {
+function crearTarea(req, res, next) {
   if (!req.body || typeof req.body !== 'object') {
     return res.status(400).json({ message: 'El body es obligatorio y debe ser JSON' });
   }
@@ -29,8 +29,15 @@ function crearTarea(req, res) {
     return res.status(400).json({ message: 'La fecha no tiene un formato válido' });
   }
 
-  const nuevaTarea = taskService.crearTarea({ texto, prioridad, categoria, fecha });
-  res.status(201).json(nuevaTarea);
+  try {
+    const nuevaTarea = taskService.crearTarea({ texto, prioridad, categoria, fecha });
+    return res.status(201).json(nuevaTarea);
+  } catch (error) {
+    if (error.message === 'ALREADY_EXISTS') {
+      return res.status(400).json({ message: 'Ya existe una tarea con el mismo título, categoría y prioridad' });
+    }
+    return next(error);
+  }
 }
 
 function eliminarTarea(req, res, next) {

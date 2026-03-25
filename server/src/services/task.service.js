@@ -5,6 +5,16 @@ function obtenerTodas() {
 }
 
 function crearTarea(data) {
+  const duplicada = tasks.some(t =>
+    t.texto.toLowerCase() === data.texto.toLowerCase() &&
+    t.categoria === data.categoria &&
+    t.prioridad === data.prioridad
+  );
+
+  if (duplicada) {
+    throw new Error('ALREADY_EXISTS');
+  }
+
   const nuevaTarea = {
     id: Date.now().toString(),
     texto: data.texto,

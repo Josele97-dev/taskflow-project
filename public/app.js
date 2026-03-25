@@ -398,13 +398,9 @@ async function agregarTarea(e) {
         formTareas.reset();
         selectCategoria.value = ultimaCategoria;
         selectPrioridad.value = ultimaPrioridad;
+    
     } catch (error) {
-        const mensaje = document.getElementById('mensaje-error-tarea');
-        if (mensaje) {
-            mensaje.textContent = '❌ Error al crear la tarea. Inténtalo de nuevo.';
-            mensaje.classList.remove('hidden');
-            setTimeout(() => mensaje.classList.add('hidden'), 3000);
-        }
+    mostrarToastError(error.message);
     }
 }
 
