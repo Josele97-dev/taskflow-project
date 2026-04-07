@@ -5,6 +5,11 @@
     "version": "1.0.0",
     "description": "API REST para gestionar tareas y categorías"
   },
+  "servers": [
+    {
+      "url": "https://tareas-project-sight.vercel.app/api/v1"
+    }
+  ],
   "paths": {
     "/categories": {
       "get": {
@@ -27,7 +32,8 @@
                   "nombre": {
                     "type": "string"
                   }
-                }
+                },
+                "required": ["nombre"]
               }
             }
           }
@@ -42,6 +48,7 @@
         }
       }
     },
+
     "/categories/{nombre}": {
       "delete": {
         "summary": "Eliminar una categoría",
@@ -65,6 +72,7 @@
         }
       }
     },
+
     "/tasks": {
       "get": {
         "summary": "Obtener todas las tareas",
@@ -95,7 +103,8 @@
                   "fecha": {
                     "type": "string"
                   }
-                }
+                },
+                "required": ["texto", "prioridad", "categoria"]
               }
             }
           }
@@ -110,6 +119,7 @@
         }
       }
     },
+
     "/tasks/{id}": {
       "put": {
         "summary": "Actualizar una tarea",
@@ -123,6 +133,33 @@
             }
           }
         ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "texto": {
+                    "type": "string"
+                  },
+                  "prioridad": {
+                    "type": "string"
+                  },
+                  "categoria": {
+                    "type": "string"
+                  },
+                  "fecha": {
+                    "type": "string"
+                  },
+                  "completada": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Tarea actualizada correctamente"
@@ -132,6 +169,7 @@
           }
         }
       },
+
       "delete": {
         "summary": "Eliminar una tarea",
         "parameters": [
