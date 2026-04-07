@@ -6,11 +6,19 @@ const taskRoutes = require('./routes/task.routes');
 const categoryRoutes = require('./routes/category.routes');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('../swagger.json');
+
 const app = express();
 
-app.use(cors());
+// CORS CORRECTO PARA SWAGGER
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.use(express.json());
 
+// Swagger UI
 app.use(
   '/api/v1/api-docs',
   swaggerUi.serve,
@@ -23,6 +31,7 @@ app.use(
   })
 );
 
+// Archivo swagger.json
 app.get('/api/v1/swagger.json', (req, res) => {
   res.sendFile(path.join(__dirname, '../swagger.json'));
 });
@@ -31,6 +40,7 @@ app.get('/api/v1/swagger.json', (req, res) => {
 app.use('/api/v1/tasks', taskRoutes);
 app.use('/api/v1/categories', categoryRoutes);
 
+// Ruta raíz
 app.get('/', (req, res) => {
   res.send('Servidor funcionando correctamente');
 });
