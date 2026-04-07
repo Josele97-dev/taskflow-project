@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://tareas-project-sight.vercel.app/api/v1"
+      "url": "https://taskflow-project-eight.vercel.app/api/v1"
     }
   ],
   "paths": {
