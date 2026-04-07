@@ -9,12 +9,15 @@ const swaggerDocument = require('../swagger.json');
 
 const app = express();
 
-// CORS CORRECTO PARA SWAGGER
+// CORS COMPLETO + PREFLIGHT OPTIONS
 app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+// Manejar preflight OPTIONS para todas las rutas
+app.options('*', cors());
 
 app.use(express.json());
 
