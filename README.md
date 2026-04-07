@@ -116,6 +116,6 @@ Con esto, tanto backend como frontend estarán funcionando en tu máquina y podr
 ## Documentación adicional
 
 - [`server/README.md`](./server/README.md) — Arquitectura, diseño y decisiones técnicas del backend
-- [`docs/pruebas-integracion.md`](./docs/pruebas-integracion.md) — Pruebas de integración realizadas con Thunder Client
-- [docs/ai/](./docs/ai/)— Reflexiones y experimentos sobre el uso de IA durante el desarrollo (ai compartison, prompt engineering, cursos workflow, experiments, reflection)
-- [Swagger UI](https://taskflow-project-eight.vercel.app/api/v1/api-docs/) — Referencia interactiva de todos los endpoints
+- [`docs/pruebas-integracion.md`](./docs/pruebas-integracion-thunder.md) — Pruebas de integración realizadas con Thunder Client
+- [`docs/ai/`](./docs/ai/)— Reflexiones y experimentos sobre el uso de IA durante el desarrollo (ai compartison, prompt engineering, cursos workflow, experiments, reflection)
+- [`Swagger UI`](https://taskflow-project-eight.vercel.app/api/v1/api-docs/) — Referencia interactiva de todos los endpoints
